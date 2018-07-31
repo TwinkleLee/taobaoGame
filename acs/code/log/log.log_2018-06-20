@@ -1,0 +1,4 @@
+[2018-06-20T13:36:52.735] [INFO] fileLog - router init
+[2018-06-20T13:37:08.223] [INFO] fileLog - GET /
+[2018-06-20T13:37:08.250] [INFO] fileLog - GET /img/common/404.jpg
+[2018-06-20T13:37:08.276] [ERROR] fileLog - GET /img/favicon.png

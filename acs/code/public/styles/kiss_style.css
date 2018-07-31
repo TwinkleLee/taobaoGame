@@ -1,0 +1,66 @@
+html{
+    font-size:4vw;
+}
+@media (max-height:733px){ 
+    #coupon img{
+        margin: 5.73rem auto 0 auto !important;
+    }
+ }
+
+#index{
+    background-image: url("../img/kissland/background.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+.header{
+    width: 100%;
+    display: flex;
+    position: relative;
+}
+.imgCon{
+    position: relative;
+    width:23.87rem;
+    margin: 0 auto;
+}
+.imgCon img:nth-child(1){
+    height: 4.07rem;bottom: -2px;position: absolute;left: 5rem;
+}
+.imgCon img:nth-child(2){
+    height: 10.47rem;margin-left: 12rem;margin-bottom: -2px;
+}
+a:active img{
+    box-shadow: 0 0 1rem white;
+}
+.photo>img{
+    width: 100%;
+    height: 100%;
+}
+.body .photoHolder{
+    height: 14.47rem;
+    width: 23.87rem;
+}
+.body .photoHolder>img{
+    width: 13.17rem;
+    height: 4.57rem;
+    bottom: -1.4rem;
+    left: 5rem;
+    position: absolute;
+    display: block;
+    border: none;
+    pointer-events: none;
+}
+.body .photoHolder .photo{
+    margin: 0 auto;
+    height: 13.5rem;
+}
+#coupon{
+    border: none;
+}
+#coupon:active{
+    border: none;
+}
+#coupon img{
+    width: 12.53rem;
+    height: 6.77rem;
+    margin: 8.73rem auto 0 auto;
+}

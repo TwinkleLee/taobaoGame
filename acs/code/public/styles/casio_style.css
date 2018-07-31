@@ -1,0 +1,32 @@
+html{
+    font-size:4vw;
+}
+#index{
+    background-image: url("../img/casio/background.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+a:active img{
+    box-shadow: 0 0 1rem white;
+}
+.photo>img{
+    width: 96%;
+    height: 102.5%;
+}
+.body .photoHolder{
+    background: url("../img/casio/border.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    padding: 3.2rem 0px 1.7rem 0px;
+    height: 30rem;
+}
+#register{
+    background-image: url("../img/casio/background2.jpg");
+    background-size: 100% 100%;
+    background-repeat: no-repeat; 
+}
+.body .photoHolder .photo{
+    margin: 0 auto;
+    /**width: 15.2rem;**/
+    height: 25.5rem;
+}
