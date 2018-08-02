@@ -22,16 +22,35 @@ Tida.ready({
       Tida.hideLoading();
       if (result.status == "OK") {
         Tida.toast("OK");
+        alert(JSON.stringify(result))
+        var arr = result.data;
+        var a = 0, b = 0, c = 0;
+        if (arr.indexOf('女王驾到') >= 0) {
+          a = 1;
+          $('#hui1').css('display', 'none')
+          $('#liang1').css('display', 'block')
+        }
+        if (arr.indexOf('人脸魔镜') >= 0) {
+          b = 1;
+          $('#hui2').css('display', 'none')
+          $('#liang2').css('display', 'block')
+        }
+        if (arr.indexOf('人脸试衣间') >= 0) {
+          c = 1;
+          $('#hui3').css('display', 'none')
+          $('#liang3').css('display', 'block')
+        }
 
         var testArr = [1, 2, 3]//已完成的任务数组
         var hasGet = false;//是否已经领取过
 
-        $('#span').text(testArr.length)
-        $('#title').attr('src', './img/mark/title2.png')
-        $('#hui1').css('display', 'none')
-        $('#liang1').css('display', 'block')
-        if (testArr.length == 3&&!hasGet) {
-          $('#go img').attr('src','./img/mark/btn3.png');
+        $('#span').text(a + b + c);
+        if (a + b + c == 3) {
+          $('#title').attr('src', './img/mark/title2.png')
+        }
+
+        if (a + b + c == 3 && !hasGet) {
+          $('#go img').attr('src', './img/mark/btn3.png');
           if (localStorage.getItem("couponUrl_mark")) {
             $('#go').click(function () {
               window.location.href = localStorage.getItem("couponUrl_mark");
@@ -39,8 +58,8 @@ Tida.ready({
           } else {
             alert('获取红包信息失败,请重新扫描二维码')
           }
-        }else if(hasGet){
-          $('#go img').attr('src','./img/mark/btn4.png');
+        } else if (hasGet) {
+          $('#go img').attr('src', './img/mark/btn4.png');
         }
       } else {
         Tida.toast("网络故障,请刷新页面重试.");

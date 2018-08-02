@@ -64,8 +64,8 @@ Tida.ready({
                         //判断是否是人脸头像会员
                         $.post('/isRegister', { 'taobao_nick': mixNick, 'seller_id': localStorage.getItem("taobaoID") }, function (data, status) {
                             Tida.hideLoading();
-                            // if (data.result.success && data.result.model == 'false') {
-                            if (1>0) {
+                            if (data.result.success && data.result.model == 'false') {
+                            // if (1>0) {
                                 if (localStorage.getItem('status') && localStorage.getItem('status') == 'Done') {
                                     $('#index').css('opacity', '1')
                                     $("#coupon img").attr('src', "/img/mark/button2.png");
