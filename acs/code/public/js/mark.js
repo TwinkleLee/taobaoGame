@@ -38,6 +38,25 @@ Tida.ready({
                 $.post('https://taobao.troncell.com/api/v1/Taobao/PostDataByUser?mixName=' + mixNick + "&actionId=" + localStorage.getItem('actionId'), {}, function (result) {
                     Tida.hideLoading();
                     if (result.status == "OK") {
+
+                        // $('#test1').text('mixNick:' + mixNick)
+                        // $('#test2').text('taobaoID:' + result.data.taobaoID)
+
+                        // var mixNick = '风01Nlvf1oRP0A22YDCtXYfYaed1ZWFWdygvfqI69RJao8Y=';
+                        // var memberId = 34413;
+                        // var sellerId = 94399436
+                        // //获取 gameImageUrl taobaoID couponUrl
+                        // $.post('https://taobao.troncell.com/api/v1/Taobao/RegisteredFaceMember?mixName=' + mixNick +'&memberId='+ memberId+'&sellerId='+sellerId, {}, function (result) {
+                        //     alert(JSON.stringify(result));
+                        // })
+
+                        // var mixNick = 'w01WEPcVLTRuIAvlmIZSPvd3NCWqWxtHreksuXD4xQXGho=';
+                        // var memberId = 34394;
+                        // var sellerId = 94399436
+                        // //获取 gameImageUrl taobaoID couponUrl
+                        // $.post('https://taobao.troncell.com/api/v1/Taobao/RegisteredFaceMember?mixName=' + mixNick +'&memberId='+ memberId+'&sellerId='+sellerId, {}, function (result) {
+                        //     alert(JSON.stringify(result));
+                        // })
                         localStorage.setItem("taobaoID", result.data.taobaoID);
                         $("#mainImg").attr('src', result.data.gameImageUrl);
                         localStorage.setItem("couponUrl_mark", result.data.couponUrl);
@@ -45,32 +64,24 @@ Tida.ready({
                         //判断是否是人脸头像会员
                         $.post('/isRegister', { 'taobao_nick': mixNick, 'seller_id': localStorage.getItem("taobaoID") }, function (data, status) {
                             Tida.hideLoading();
-                            if (data.result.success && data.result.model == 'false') {
-                                // Tida.toast('还没有注册过')
-                                // $("#coupon").text('点我注册人脸会员');
-                                if(localStorage.getItem('status')&&localStorage.getItem('status')=='Done'){
-                                    $('#index').css('opacity','1')
+                            // if (data.result.success && data.result.model == 'false') {
+                            if (1>0) {
+                                if (localStorage.getItem('status') && localStorage.getItem('status') == 'Done') {
+                                    $('#index').css('opacity', '1')
                                     $("#coupon img").attr('src', "/img/mark/button2.png");
                                     $("#coupon").attr('href', "/register");
-                                }else if(localStorage.getItem('status')=='Register'){
-                                    window.location.href="/register"
+                                } else if (localStorage.getItem('status') == 'Register') {
+                                    window.location.href = "/register"
                                 }
-             
+
                             } else {
-                                // Tida.toast('已经注册过')
-                                // if(localStorage.getItem("couponUrl_mark")){
-                                // $("#coupon").attr('href', localStorage.getItem("couponUrl_mark"));
-                                // $("#coupon").text('点我查看进度');
-                                if(localStorage.getItem('status')&&localStorage.getItem('status')=='Done'){
-                                    $('#index').css('opacity','1')
+                                if (localStorage.getItem('status') && localStorage.getItem('status') == 'Done') {
+                                    $('#index').css('opacity', '1')
                                     $("#coupon img").attr('src', "/img/mark/button1.png");
                                     $("#coupon").attr('href', "/activity");
-                                }else if(localStorage.getItem('status')=='Register'){
-                                    window.location.href="/activity"
+                                } else if (localStorage.getItem('status') == 'Register') {
+                                    window.location.href = "/activity"
                                 }
-                                // }else{
-                                // Tida.toast("获取红包失败"); 
-                                // }
                             }
                         }, 'json')
 

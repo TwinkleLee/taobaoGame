@@ -59,6 +59,18 @@ html{
     bottom: 0;
     height: 3.17rem;
 }
+
+.mark_footer{
+    background: url("../img/mark/di.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    width: 100%;
+    position: absolute;
+    left:0;
+    bottom: 0;
+    height: 3.17rem;
+}
+
 .hidden_fileinput{
     opacity: 0;
     position: relative;

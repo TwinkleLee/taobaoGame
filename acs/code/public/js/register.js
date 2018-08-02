@@ -1,5 +1,6 @@
-
 (function (d, w, undefined) {
+    var phoneNumber;
+    var verticicate;
     var c = d.getElementById("myCanvas");
     var ctx = c.getContext("2d"), imgGotten = false;
     $(d).ready(function () {
@@ -15,9 +16,33 @@
             }
         });
     })
+
+    //验证码
+    $('#verticicateImage').click(function () {
+        var pattern = /^1[34578]\d{9}$/;
+        phoneNumber = $('#phone').val();
+        if (pattern.test(phoneNumber)) {
+            verticicate = '' + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10)
+            //此处调用接口发送验证码
+            Tida.toast("验证码已发送,15秒后可重新尝试");
+            $('#verticicateImage').css('display', 'none');
+            setTimeout(() => {
+                $('#verticicateImage').css('display', 'block');
+            }, 15000);
+        } else {
+            Tida.toast("请填写正确的手机号");
+        }
+    })
+
+
     //提交注册
     $(d.forms['registerForm']).on('submit', function (e) {
         e.preventDefault();
+        if (phoneNumber != $('#phone').val() || verticicate != $('#verticicate').val()) {
+            Tida.toast('请填写正确的验证码')
+            return
+        }
+
         var username = $("#name").val(),
             mixNick = localStorage.getItem("mixNick"), formData,
             seller_id = localStorage.getItem("taobaoID"),
@@ -42,6 +67,18 @@
                 // alert(JSON.stringify(result.result.messages.string));
                 if (result.result.success) {
                     Tida.toast('注册成功');
+
+                    if (localStorage.getItem("mixNick") && result.result.model && localStorage.getItem("taobaoID")) {
+                        var mixNick = localStorage.getItem("mixNick");
+                        var memberId = result.result.model;
+                        var sellerId = localStorage.getItem("taobaoID")
+                        //获取 gameImageUrl taobaoID couponUrl
+                        $.post('https://taobao.troncell.com/api/v1/Taobao/RegisteredFaceMember?mixName=' + mixNick + '&memberId=' + memberId + '&sellerId=' + sellerId, {}, function (result) {
+                            alert(JSON.stringify(result));
+                        })
+
+                    }
+
                     // window.history.back();
                     window.location.href = "/activity";
                 } else {//失败
