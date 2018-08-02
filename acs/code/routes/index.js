@@ -1,20 +1,21 @@
 var express = require('express');
 var https = require("https");
 var router = express.Router();
-var logService = require(process.cwd()+'/acs/code/log/logService.js');
-var multer  = require('multer');
+var logService = require(process.cwd() + '/acs/code/log/logService.js');
+var multer = require('multer');
 var upload = multer({ dest: 'uploads/' });
 var taobao = require(process.cwd() + "/acs/code/taobao");
 var fs = require("fs");
 var getPage = require('./tenants');
-var getData = require(process.cwd()+'/acs/code/data/data.js');
+var getData = require(process.cwd() + '/acs/code/data/data.js');
+var request = require("request");
 
 //调用接口需要参数
 var appKey = getData('appKey');
-var secret =getData('secret');
+var secret = getData('secret');
 var root = process.cwd();
-var session =  getData('troncellSession');
-var faceGroupType =  getData('faceGroupType');
+var session = getData('troncellSession');
+var faceGroupType = getData('faceGroupType');
 
 var client = new taobao.ApiClient({
     'appkey': appKey,
@@ -27,125 +28,125 @@ logService.logger.info('router init');
 /* GET home page. */
 router.get('/', function (req, res) {
     var tenantName = req.query.TenantName || req.query.tenantName;
-    if(!getPage(tenantName)){
-        res.sendFile( root + "/acs/code/public/html/404.html");
-    }else{
-        res.sendFile( root + "/acs/code/" + getPage(tenantName));
+    if (!getPage(tenantName)) {
+        res.sendFile(root + "/acs/code/public/html/404.html");
+    } else {
+        res.sendFile(root + "/acs/code/" + getPage(tenantName));
     }
 })
 
 //健康检测
-router.get('/healthCheck',function(req,res){
+router.get('/healthCheck', function (req, res) {
     res.end("success");
 })
 //会员注册
 router.get('/register', function (req, res) {
-    res.sendFile( root + "/acs/code/public/html/register_mark.html" );
+    res.sendFile(root + "/acs/code/public/html/register_mark.html");
 })
 //活动
 router.get('/activity', function (req, res) {
-    res.sendFile( root + "/acs/code/public/html/activity_mark.html" );
+    res.sendFile(root + "/acs/code/public/html/activity_mark.html");
 })
 
 //POST upload.array('file',1)
-router.post('/doRegister', upload.array('file',1),function (req, res) {
-    var params = req.body,byteArray=[];
+router.post('/doRegister', upload.array('file', 1), function (req, res) {
+    var params = req.body, byteArray = [];
     logService.logger.info('doRegister start');
-    try{
-        fs.readFile(req.files[0].path,function(error,data){
-            if(error){return res.end(JSON.stringify(error));}
+    try {
+        fs.readFile(req.files[0].path, function (error, data) {
+            if (error) { return res.end(JSON.stringify(error)); }
             byteArray = data;
             var apiParams = {
-                'face_group_type':faceGroupType,
-                'seller_id':params.seller_id,
-                'user_nick':params.user_nick,
-                'images':byteArray,
-                'session':session,
-                'sign_method':'md5',
-                'app_key':appKey,
-                'timestamp':client.timestamp(),
-                'v':'2.0'
+                'face_group_type': faceGroupType,
+                'seller_id': params.seller_id,
+                'user_nick': params.user_nick,
+                'images': byteArray,
+                'session': session,
+                'sign_method': 'md5',
+                'app_key': appKey,
+                'timestamp': client.timestamp(),
+                'v': '2.0'
             };
-            
-            logService.logger.info('session',session);
-            client.execute('taobao.wisdom.member.create',apiParams, function(error, response) {
-                if(error){
+
+            logService.logger.info('session', session);
+            client.execute('taobao.wisdom.member.create', apiParams, function (error, response) {
+                if (error) {
                     logService.logger.error('taobao.wisdom.member.create return error:');
                     logService.logger.error(JSON.stringify(error));
                     res.writeHead(500);
                     res.end(JSON.stringify(error));
-                }else{
+                } else {
                     logService.logger.info('taobao.wisdom.member.create return result:');
                     logService.logger.info(JSON.stringify(response));
                     res.writeHead(200);
                     res.end(JSON.stringify(response));
                 }
-            })       
-        }) 
-    }catch(e){
+            })
+        })
+    } catch (e) {
         logService.logger.error(JSON.stringify(e));
         res.writeHead(500);
         res.end(JSON.stringify(e));
-    }finally{
+    } finally {
 
     }
 })
 router.post('/isRegister', function (req, res) {
     var params = req.body;
-    try{
+    try {
         client.execute('taobao.wisdom.member.query.exist', {
-            'taobao_nick':params.taobao_nick,
-            'seller_id':params.seller_id,
-            'session':session
-        }, function(error, response) {
-            if(error){
-                    logService.logger.error(JSON.stringify(error));
-                    res.writeHead(500);
-                    res.end(JSON.stringify(error));
-                }else{
-                    logService.logger.info(JSON.stringify(response));
-                    res.writeHead(200);
-                    res.end(JSON.stringify(response));
-                }
+            'taobao_nick': params.taobao_nick,
+            'seller_id': params.seller_id,
+            'session': session
+        }, function (error, response) {
+            if (error) {
+                logService.logger.error(JSON.stringify(error));
+                res.writeHead(500);
+                res.end(JSON.stringify(error));
+            } else {
+                logService.logger.info(JSON.stringify(response));
+                res.writeHead(200);
+                res.end(JSON.stringify(response));
+            }
         })
-    }catch(e){
+    } catch (e) {
         logService.logger.error(JSON.stringify(e));
         res.writeHead(500);
-        res.end(JSON.stringify(e));  
-    }finally{
+        res.end(JSON.stringify(e));
+    } finally {
 
     }
 })
 router.post('/getAvatar', function (req, res) {
-    var params = req.body; 
+    var params = req.body;
     client.execute('taobao.user.avatar.get', {
-        'nick':params.mixnick
-    }, function(error, response) {
-            if(error){
-                res.writeHead(500);
-                logService.logger.error(JSON.stringify(error));
-                res.end(JSON.stringify(error));
-            }else{
-                res.writeHead(200);
-                logService.logger.info(JSON.stringify(response));
-                res.end(JSON.stringify(response));
-            }
+        'nick': params.mixnick
+    }, function (error, response) {
+        if (error) {
+            res.writeHead(500);
+            logService.logger.error(JSON.stringify(error));
+            res.end(JSON.stringify(error));
+        } else {
+            res.writeHead(200);
+            logService.logger.info(JSON.stringify(response));
+            res.end(JSON.stringify(response));
+        }
     })
 })
 //查询设备
 router.post('/getDevice', function (req, res) {
     var apiParams = {
-        'device_code':getData('markDeviceId'),
-        'session':getData('markSession')
+        'device_code': getData('markDeviceId'),
+        'session': getData('markSession')
     };
     logService.logger.info("taobao.crm.member.identity.get===>sending");
     logService.logger.info(JSON.stringify(apiParams));
-    client.execute('taobao.smartstore.device.get', apiParams, function(error, response) {
-        if(error){
+    client.execute('taobao.smartstore.device.get', apiParams, function (error, response) {
+        if (error) {
             res.writeHead(500);
             logService.logger.error(JSON.stringify(error));
             res.end(JSON.stringify(error));
-        }else{
+        } else {
             res.writeHead(200);
             logService.logger.info(JSON.stringify(response));
             res.end(JSON.stringify(response));
@@ -156,48 +157,48 @@ router.post('/getDevice', function (req, res) {
 router.post('/isBrandMember', function (req, res) {
     var params = req.body;
     // ,"itemId":557517857975
-    var apiParams =  {
-        'session':getData('kidslandSession'),
-        'extraInfo':JSON.stringify({"source":"paiyangji","deviceId":getData('kidslandDeviceId')[0]}),
-        'mix_nick':params.mixnick,
+    var apiParams = {
+        'session': getData('kidslandSession'),
+        'extraInfo': JSON.stringify({ "source": "paiyangji", "deviceId": getData('kidslandDeviceId')[0] }),
+        'mix_nick': params.mixnick,
     };
     logService.logger.info("taobao.crm.member.identity.get===>sending");
     logService.logger.info(JSON.stringify(apiParams));
-    client.execute('taobao.crm.member.identity.get',apiParams, function(error, response) {
-            logService.logger.info("taobao.crm.member.identity.get===>recevied");
-            if(error){
-                res.writeHead(500);
-                logService.logger.error(JSON.stringify(error));
-                res.end(JSON.stringify(error));
-            }else{
-                res.writeHead(200);
-                logService.logger.info(JSON.stringify(response));
-                res.end(JSON.stringify(response));
-            }
+    client.execute('taobao.crm.member.identity.get', apiParams, function (error, response) {
+        logService.logger.info("taobao.crm.member.identity.get===>recevied");
+        if (error) {
+            res.writeHead(500);
+            logService.logger.error(JSON.stringify(error));
+            res.end(JSON.stringify(error));
+        } else {
+            res.writeHead(200);
+            logService.logger.info(JSON.stringify(response));
+            res.end(JSON.stringify(response));
+        }
     })
 })
 //品牌会员注册地址请求
 router.post('/getRegisterUrl', function (req, res) {
-    var params = req.body; 
+    var params = req.body;
     //,"itemId":557517857975
-    var apiParams =   {
-        'session':getData('kidslandSession'),
-        'extra_info':JSON.stringify({"source":"paiyangji","deviceId":getData('kidslandDeviceId')[0]}),
-        'callback_url':params.callback_url
+    var apiParams = {
+        'session': getData('kidslandSession'),
+        'extra_info': JSON.stringify({ "source": "paiyangji", "deviceId": getData('kidslandDeviceId')[0] }),
+        'callback_url': params.callback_url
     };
     logService.logger.info("taobao.crm.member.joinurl.get===>sending");
     logService.logger.info(JSON.stringify(apiParams));
-    client.execute('taobao.crm.member.joinurl.get',apiParams, function(error, response) {
-            logService.logger.info("taobao.crm.member.joinurl.get===>recevied");
-            if(error){
-                res.writeHead(500);
-                logService.logger.error(JSON.stringify(error));
-                res.end(JSON.stringify(error));
-            }else{
-                res.writeHead(200);
-                logService.logger.info(JSON.stringify(response));
-                res.end(JSON.stringify(response));
-            }
+    client.execute('taobao.crm.member.joinurl.get', apiParams, function (error, response) {
+        logService.logger.info("taobao.crm.member.joinurl.get===>recevied");
+        if (error) {
+            res.writeHead(500);
+            logService.logger.error(JSON.stringify(error));
+            res.end(JSON.stringify(error));
+        } else {
+            res.writeHead(200);
+            logService.logger.info(JSON.stringify(response));
+            res.end(JSON.stringify(response));
+        }
     })
 })
 
@@ -205,72 +206,106 @@ router.post('/getRegisterUrl', function (req, res) {
 //查询该用户是否是商家会员
 router.post('/isMarkMember', function (req, res) {
     var params = req.body;
-    var apiParams =  {
-        'session':getData('markSession'),
-        'extraInfo':JSON.stringify({"source":"paiyangji","deviceId":getData('markDeviceId'),"itemId":557517857975}),
-        'mix_nick':params.mixnick,
+    var apiParams = {
+        'session': getData('markSession'),
+        'extraInfo': JSON.stringify({ "source": "paiyangji", "deviceId": getData('markDeviceId'), "itemId": 557517857975 }),
+        'mix_nick': params.mixnick,
     };
     logService.logger.info("taobao.crm.member.identity.get===>sending");
     logService.logger.info(JSON.stringify(apiParams));
-    client.execute('taobao.crm.member.identity.get',apiParams, function(error, response) {
-            logService.logger.info("taobao.crm.member.identity.get===>recevied");
-            if(error){
-                res.writeHead(500);
-                logService.logger.error(JSON.stringify(error));
-                res.end(JSON.stringify(error));
-            }else{
-                res.writeHead(200);
-                logService.logger.info(JSON.stringify(response));
-                res.end(JSON.stringify(response));
-            }
+    client.execute('taobao.crm.member.identity.get', apiParams, function (error, response) {
+        logService.logger.info("taobao.crm.member.identity.get===>recevied");
+        if (error) {
+            res.writeHead(500);
+            logService.logger.error(JSON.stringify(error));
+            res.end(JSON.stringify(error));
+        } else {
+            res.writeHead(200);
+            logService.logger.info(JSON.stringify(response));
+            res.end(JSON.stringify(response));
+        }
     })
 })
 //品牌会员注册地址请求
 router.post('/getMarkRegisterUrl', function (req, res) {
-    var params = req.body; 
+    var params = req.body;
     //,"itemId":557517857975
-    var apiParams =   {
-        'session':getData('markSession'),
-        'extra_info':JSON.stringify({"source":"paiyangji","deviceId":getData('markDeviceId'),"itemId":557517857975}),
-        'callback_url':params.callback_url
+    var apiParams = {
+        'session': getData('markSession'),
+        'extra_info': JSON.stringify({ "source": "paiyangji", "deviceId": getData('markDeviceId'), "itemId": 557517857975 }),
+        'callback_url': params.callback_url
     };
     logService.logger.info("taobao.crm.member.joinurl.get===>sending");
     logService.logger.info(JSON.stringify(apiParams));
-    client.execute('taobao.crm.member.joinurl.get',apiParams, function(error, response) {
-            logService.logger.info("taobao.crm.member.joinurl.get===>recevied");
-            if(error){
-                res.writeHead(500);
-                logService.logger.error(JSON.stringify(error));
-                res.end(JSON.stringify(error));
-            }else{
-                res.writeHead(200);
-                logService.logger.info(JSON.stringify(response));
-                res.end(JSON.stringify(response));
-            }
+    client.execute('taobao.crm.member.joinurl.get', apiParams, function (error, response) {
+        logService.logger.info("taobao.crm.member.joinurl.get===>recevied");
+        if (error) {
+            res.writeHead(500);
+            logService.logger.error(JSON.stringify(error));
+            res.end(JSON.stringify(error));
+        } else {
+            res.writeHead(200);
+            logService.logger.info(JSON.stringify(response));
+            res.end(JSON.stringify(response));
+        }
     })
 })
 
 //查询该用户是否关注商家
 router.post('/isBrandFollow', function (req, res) {
     var params = req.body;
-    var apiParams =  {
-        'session':getData('kidslandSession'),
-        'extraInfo':JSON.stringify({"source":"paiyangji","deviceId":getData('kidslandDeviceId')[0]}),
-        'mix_nick':params.mixnick,
+    var apiParams = {
+        'session': getData('kidslandSession'),
+        'extraInfo': JSON.stringify({ "source": "paiyangji", "deviceId": getData('kidslandDeviceId')[0] }),
+        'mix_nick': params.mixnick,
     };
     logService.logger.info("taobao.crm.member.identity.get===>sending");
     logService.logger.info(JSON.stringify(apiParams));
-    client.execute('taobao.crm.member.identity.get',apiParams, function(error, response) {
-            logService.logger.info("taobao.crm.member.identity.get===>recevied");
-            if(error){
-                res.writeHead(500);
-                logService.logger.error(JSON.stringify(error));
-                res.end(JSON.stringify(error));
-            }else{
-                res.writeHead(200);
-                logService.logger.info(JSON.stringify(response));
-                res.end(JSON.stringify(response));
-            }
+    client.execute('taobao.crm.member.identity.get', apiParams, function (error, response) {
+        logService.logger.info("taobao.crm.member.identity.get===>recevied");
+        if (error) {
+            res.writeHead(500);
+            logService.logger.error(JSON.stringify(error));
+            res.end(JSON.stringify(error));
+        } else {
+            res.writeHead(200);
+            logService.logger.info(JSON.stringify(response));
+            res.end(JSON.stringify(response));
+        }
     })
+})
+
+
+//发送验证码
+router.post('/verticicate', function (req, res) {
+    var params = req.body;
+    var options = {
+        method: 'POST',
+        url: 'http://api.sms.cn/sms/',
+        headers:
+        {
+            'Postman-Token': '687fbcc3-0dcc-4852-99f9-5979aab6ee7e',
+            'Cache-Control': 'no-cache',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Abp.TenantId': '18'
+        },
+        form:
+        {
+            ac: 'send',
+            uid: 'troncell',
+            pwd: '9aa2bf57779f3f56c9c18e6a0a8957ab',
+            template: '439062',
+            mobile: params.mobile,
+            content: encodeURI(params.verticicate)
+        }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+        logService.logger.info(body);
+        // res.end(JSON.stringify(body)[message]);
+        res.end(body);
+    });
+
 })
 module.exports = router;

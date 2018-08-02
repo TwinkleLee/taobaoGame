@@ -23,6 +23,15 @@
         phoneNumber = $('#phone').val();
         if (pattern.test(phoneNumber)) {
             verticicate = '' + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10)
+
+            $.post('/verticicate', {
+                mobile:phoneNumber,
+                verticicate:verticicate
+            }, function (result) {
+                // alert(result)
+                Tida.toast(JSON.parse(result).message)
+            })
+
             //此处调用接口发送验证码
             Tida.toast("验证码已发送,15秒后可重新尝试");
             $('#verticicateImage').css('display', 'none');
@@ -74,7 +83,7 @@
                         var sellerId = localStorage.getItem("taobaoID")
                         //获取 gameImageUrl taobaoID couponUrl
                         $.post('https://taobao.troncell.com/api/v1/Taobao/RegisteredFaceMember?mixName=' + mixNick + '&memberId=' + memberId + '&sellerId=' + sellerId, {}, function (result) {
-                            alert(JSON.stringify(result));
+                            // alert(JSON.stringify(result));
                         })
 
                     }

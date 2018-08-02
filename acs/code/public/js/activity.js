@@ -19,10 +19,11 @@ Tida.ready({
     var mixNick = localStorage.getItem("mixNick");
     //获取 gameImageUrl taobaoID couponUrl
     $.get('https://taobao.troncell.com/api/v1/Taobao/GetGamesByUser?mixName=' + mixNick, {}, function (result) {
-      Tida.hideLoading();
+
+      // Tida.hideLoading();
       if (result.status == "OK") {
-        Tida.toast("OK");
-        alert(JSON.stringify(result))
+        // Tida.toast("OK");
+        // alert(JSON.stringify(result))
         var arr = result.data;
         var a = 0, b = 0, c = 0;
         if (arr.indexOf('女王驾到') >= 0) {
@@ -41,26 +42,43 @@ Tida.ready({
           $('#liang3').css('display', 'block')
         }
 
-        var testArr = [1, 2, 3]//已完成的任务数组
-        var hasGet = false;//是否已经领取过
 
         $('#span').text(a + b + c);
         if (a + b + c == 3) {
           $('#title').attr('src', './img/mark/title2.png')
         }
 
-        if (a + b + c == 3 && !hasGet) {
-          $('#go img').attr('src', './img/mark/btn3.png');
-          if (localStorage.getItem("couponUrl_mark")) {
-            $('#go').click(function () {
-              window.location.href = localStorage.getItem("couponUrl_mark");
-            })
-          } else {
-            alert('获取红包信息失败,请重新扫描二维码')
+        if (a + b + c < 3) {
+          $('#go img').attr('src', './img/mark/btn2.png');
+        } else {
+          $.post('https://taobao.troncell.com/api/v1/Taobao/CanAward4User?mixName=' + mixNick + '&sellerId=' + localStorage.getItem("taobaoID"), {}, function (result) {
+            if (result.data) {
+              // alert(result.message)
+              var hasGet = false;//是否已经领取过
+            } else {
+              // alert(result.message)
+              var hasGet = true;
+            }
+          })
+          if (!hasGet) {
+            $('#go img').attr('src', './img/mark/btn3.png');
+            if (localStorage.getItem("couponUrl_mark")) {
+              $('#go').click(function () {
+                window.location.href = localStorage.getItem("couponUrl_mark");
+                $.post('https://taobao.troncell.com/api/v1/Taobao/AwardByUser?mixName=' + mixNick + '&sellerId=' + localStorage.getItem("taobaoID"), {}, function (result) {
+                  // alert(result.message)
+                })
+              })
+            } else {
+              Tida.toast('获取红包信息失败,请重新扫描二维码')
+            }
+          } else{
+            $('#go img').attr('src', './img/mark/btn4.png');
           }
-        } else if (hasGet) {
-          $('#go img').attr('src', './img/mark/btn4.png');
+
         }
+
+
       } else {
         Tida.toast("网络故障,请刷新页面重试.");
       }
