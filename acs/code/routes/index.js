@@ -9,6 +9,32 @@ var fs = require("fs");
 var getPage = require('./tenants');
 var getData = require(process.cwd() + '/acs/code/data/data.js');
 var request = require("request");
+var http = require('http');
+
+
+// var url = 'http://p0.meituan.net/tuanpic/3df525af5a3f7fe04077567d2a6caf794904.png';  //一张网络图片
+// http.get(url, function (res) {
+//     var chunks = []; //用于保存网络请求不断加载传输的缓冲数据
+//     var size = 0;　　 //保存缓冲数据的总长度
+//     res.on('data', function (chunk) {
+//         chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
+//         //node会把接收到的数据片段逐段的保存在缓冲区（Buffer），
+//         //这些数据片段会形成一个个缓冲对象（即Buffer对象），
+//         //而Buffer数据的拼接并不能像字符串那样拼接（因为一个中文字符占三个字节），
+//         //如果一个数据片段携带着一个中文的两个字节，下一个数据片段携带着最后一个字节，
+//         //直接字符串拼接会导致乱码，为避免乱码，所以将得到缓冲数据推入到chunks数组中，
+//         //利用下面的node.js内置的Buffer.concat()方法进行拼接
+//         size += chunk.length;　　//累加缓冲数据的长度
+//     });
+//     res.on('end', function (err) {
+//         var data = Buffer.concat(chunks, size);　　//Buffer.concat将chunks数组中的缓冲数据拼接起来，返回一个新的Buffer对象赋值给data
+//         console.log(Buffer.isBuffer(data));　　　　//可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
+//         console.log(data)
+//     });
+// });
+
+
+
 
 //调用接口需要参数
 var appKey = getData('appKey');
@@ -49,42 +75,97 @@ router.get('/activity', function (req, res) {
 })
 
 //POST upload.array('file',1)
-router.post('/doRegister', upload.array('file', 1), function (req, res) {
+// router.post('/doRegister', upload.array('file', 1), function (req, res) {
+router.post('/doRegister', upload.array(), function (req, res) {
     var params = req.body, byteArray = [];
     logService.logger.info('doRegister start');
+    // logService.logger.info(req.body);
     try {
-        fs.readFile(req.files[0].path, function (error, data) {
-            if (error) { return res.end(JSON.stringify(error)); }
-            byteArray = data;
-            var apiParams = {
-                'face_group_type': faceGroupType,
-                'seller_id': params.seller_id,
-                'user_nick': params.user_nick,
-                'images': byteArray,
-                'session': session,
-                'sign_method': 'md5',
-                'app_key': appKey,
-                'timestamp': client.timestamp(),
-                'v': '2.0'
-            };
+        // fs.readFile(req.files[0].path, function (error, data) {
+        // if (error) { return res.end(JSON.stringify(error)); }
+        // byteArray = data;
 
-            logService.logger.info('session', session);
-            client.execute('taobao.wisdom.member.create', apiParams, function (error, response) {
-                if (error) {
-                    logService.logger.error('taobao.wisdom.member.create return error:');
-                    logService.logger.error(JSON.stringify(error));
-                    res.writeHead(500);
-                    res.end(JSON.stringify(error));
-                } else {
-                    logService.logger.info('taobao.wisdom.member.create return result:');
-                    logService.logger.info(JSON.stringify(response));
-                    res.writeHead(200);
-                    res.end(JSON.stringify(response));
-                }
-            })
+        logService.logger.info(123);
+
+        var url = params.base64Data;  //一张网络图片
+        // var url = 'http://p0.meituan.net/tuanpic/3df525af5a3f7fe04077567d2a6caf794904.png'
+        https.get(url, function (res2) {
+
+            // logService.logger.info(223);
+
+            var chunks = []; //用于保存网络请求不断加载传输的缓冲数据
+            var size = 0;　　 //保存缓冲数据的总长度
+            res2.on('data', function (chunk) {
+                chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
+                //node会把接收到的数据片段逐段的保存在缓冲区（Buffer），
+                //这些数据片段会形成一个个缓冲对象（即Buffer对象），
+                //而Buffer数据的拼接并不能像字符串那样拼接（因为一个中文字符占三个字节），
+                //如果一个数据片段携带着一个中文的两个字节，下一个数据片段携带着最后一个字节，
+                //直接字符串拼接会导致乱码，为避免乱码，所以将得到缓冲数据推入到chunks数组中，
+                //利用下面的node.js内置的Buffer.concat()方法进行拼接
+                size += chunk.length;　　//累加缓冲数据的长度
+                logService.logger.info(333);
+            });
+            res2.on('end', function (err) {
+                var data = Buffer.concat(chunks, size);　　//Buffer.concat将chunks数组中的缓冲数据拼接起来，返回一个新的Buffer对象赋值给data
+                console.log(Buffer.isBuffer(data));　　　　//可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
+                byteArray = data;
+                // console.log(data)
+                var apiParams = {
+                    'face_group_type': faceGroupType,
+                    'seller_id': params.seller_id,
+                    'user_nick': params.user_nick,
+                    'images': byteArray,
+                    'session': session,
+                    'sign_method': 'md5',
+                    'app_key': appKey,
+                    'timestamp': client.timestamp(),
+                    'v': '2.0',
+                    'user_full_name': params.name ? params.name : '',
+                    'mobile': params.phone ? params.phone : ''
+                };
+
+                logService.logger.info('params1', apiParams.images);
+
+
+                client.execute('taobao.wisdom.member.create', apiParams, function (error, response) {
+                    if (error) {
+                        logService.logger.error('taobao.wisdom.member.create return error:');
+                        logService.logger.error(JSON.stringify(error));
+                        res.writeHead(500);
+                        // res.set('Content-Type','text/html')
+                        res.end(JSON.stringify(error));
+                    } else {
+                        logService.logger.info('taobao.wisdom.member.create return result:')
+                        // logService.logger.info('hello1')
+                        logService.logger.info(JSON.stringify(response));
+                        res.writeHead(200);
+                        res.end(JSON.stringify(response));
+                        // logService.logger.info('hello3')
+                    }
+                })
+            });
+        }).on('error',function(err){
+            logService.logger.info('https error');
+            logService.logger.info(JSON.stringify(err));
         })
+
+
+
+        // var byteArray = new Buffer(params.base64Data)
+        // b1<Buffer 61 62 63 31 32 33>
+        // Buffer.prototype.toByteArray = function () {
+        //     return Array.prototype.slice.call(this, 0)
+        // }
+        // byteArray = b1.toByteArray()
+
+        // byteArray = [params.base64Data];
+
+
+
+        // })
     } catch (e) {
-        logService.logger.error(JSON.stringify(e));
+        logService.logger.error(JSON.stringify(e),'catch了');
         res.writeHead(500);
         res.end(JSON.stringify(e));
     } finally {

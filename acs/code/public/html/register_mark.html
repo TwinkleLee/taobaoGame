@@ -29,8 +29,9 @@
                                 <div class="avatar_holder" style="overflow:hidden;">
                                         <a>
                                                 <img id="image" alt="头像" src='./img/mark/avatar_picker.png' name="image" style="top:50%;transform: translateY(-50%);" />
-                                                <input type="file" accept="image/*" name="file" id="file" class="hidden_fileinput" />
-                                                <span class="avatar_tips">选择您的人脸识别照片</span>
+                                                <!-- <input type="file" accept="image/*" name="file" id="file" class="hidden_fileinput"/> -->
+                                                <div id="file" class="hidden_fileinput"></div>
+                                                <span class="avatar_tips" style="z-index:2" id="avatar_tips">选择您的人脸识别照片</span>
                                         </a>
                                 </div>
                         </div>
@@ -46,7 +47,7 @@
                                                         <img id="verticicateImage" src='./img/mark/yanzhenma.png' style="position:absolute;bottom:25%;right:0;width:30%;"/>
                                                 </div>
                                                 <div class="my-form-group">
-                                                        <input type="text" class="my-form-control" autocomplete="off" id="verticicate" name="name" placeholder="请输入验证码" required/>
+                                                        <input type="text" class="my-form-control" autocomplete="off" id="verticicate" name="verticicate" placeholder="请输入验证码" required/>
                                                 </div>
                                         </div>
                                         <div class="col-xs-12" style="text-align: center;">

@@ -50,8 +50,12 @@ Tida.ready({
 
         if (a + b + c < 3) {
           $('#go img').attr('src', './img/mark/btn2.png');
+          Tida.hideLoading();
+
         } else {
           $.post('https://taobao.troncell.com/api/v1/Taobao/CanAward4User?mixName=' + mixNick + '&sellerId=' + localStorage.getItem("taobaoID"), {}, function (result) {
+            Tida.hideLoading();
+
             if (result.data) {
               // alert(result.message)
               var hasGet = false;//是否已经领取过
@@ -72,7 +76,7 @@ Tida.ready({
             } else {
               Tida.toast('获取红包信息失败,请重新扫描二维码')
             }
-          } else{
+          } else {
             $('#go img').attr('src', './img/mark/btn4.png');
           }
 
