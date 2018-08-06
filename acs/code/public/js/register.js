@@ -125,10 +125,10 @@
         //提交注册
         $(d.forms['registerForm']).on('submit', function (e) {
             e.preventDefault();
-            // if (phoneNumber != $('#phone').val() || verticicate != $('#verticicate').val()) {
-            //     Tida.toast('请填写正确的验证码')
-            //     return
-            // }
+            if (phoneNumber != $('#phone').val() || verticicate != $('#verticicate').val()) {
+                Tida.toast('请填写正确的验证码')
+                return
+            }
 
             var username = $("#name").val(),
                 mixNick = localStorage.getItem("mixNick"), formData,

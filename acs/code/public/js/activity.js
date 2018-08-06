@@ -26,6 +26,7 @@ Tida.ready({
         // alert(JSON.stringify(result))
         var arr = result.data;
         var a = 0, b = 0, c = 0;
+        var hasGet;
         if (arr.indexOf('女王驾到') >= 0) {
           a = 1;
           $('#hui1').css('display', 'none')
@@ -58,13 +59,15 @@ Tida.ready({
 
             if (result.data) {
               // alert(result.message)
-              var hasGet = false;//是否已经领取过
+              hasGet = false;//是否已经领取过
             } else {
               // alert(result.message)
-              var hasGet = true;
+              hasGet = true;
             }
           })
+          alert(111)
           if (!hasGet) {
+            alert(1)
             $('#go img').attr('src', './img/mark/btn3.png');
             if (localStorage.getItem("couponUrl_mark")) {
               $('#go').click(function () {
@@ -77,11 +80,11 @@ Tida.ready({
               Tida.toast('获取红包信息失败,请重新扫描二维码')
             }
           } else {
+            alert(2)
             $('#go img').attr('src', './img/mark/btn4.png');
           }
 
         }
-
 
       } else {
         Tida.toast("网络故障,请刷新页面重试.");
