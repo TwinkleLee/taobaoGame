@@ -57,33 +57,29 @@ Tida.ready({
           $.post('https://taobao.troncell.com/api/v1/Taobao/CanAward4User?mixName=' + mixNick + '&sellerId=' + localStorage.getItem("taobaoID"), {}, function (result) {
             Tida.hideLoading();
 
-            if (result.data) {
+            if (result.message.indexOf('不能') < 0) {
               // alert(result.message)
               hasGet = false;//是否已经领取过
             } else {
               // alert(result.message)
               hasGet = true;
             }
-          })
-          alert(111)
-          if (!hasGet) {
-            alert(1)
-            $('#go img').attr('src', './img/mark/btn3.png');
-            if (localStorage.getItem("couponUrl_mark")) {
-              $('#go').click(function () {
-                window.location.href = localStorage.getItem("couponUrl_mark");
-                $.post('https://taobao.troncell.com/api/v1/Taobao/AwardByUser?mixName=' + mixNick + '&sellerId=' + localStorage.getItem("taobaoID"), {}, function (result) {
-                  // alert(result.message)
+            if (!hasGet) {
+              $('#go img').attr('src', './img/mark/btn3.png');
+              if (localStorage.getItem("couponUrl_mark")) {
+                $('#go').click(function () {
+                  window.location.href = localStorage.getItem("couponUrl_mark");
+                  $.post('https://taobao.troncell.com/api/v1/Taobao/AwardByUser?mixName=' + mixNick + '&sellerId=' + localStorage.getItem("taobaoID"), {}, function (result) {
+                    // alert(result.message)
+                  })
                 })
-              })
+              } else {
+                Tida.toast('获取红包信息失败,请重新扫描二维码')
+              }
             } else {
-              Tida.toast('获取红包信息失败,请重新扫描二维码')
+              $('#go img').attr('src', './img/mark/btn4.png');
             }
-          } else {
-            alert(2)
-            $('#go img').attr('src', './img/mark/btn4.png');
-          }
-
+          })
         }
 
       } else {
