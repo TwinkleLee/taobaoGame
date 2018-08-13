@@ -74,6 +74,26 @@ router.get('/activity', function (req, res) {
     res.sendFile(root + "/acs/code/public/html/activity_mark.html");
 })
 
+
+router.get('/game', function (req, res, next) {
+    console.log(req.query)
+    if (req.query.name && req.query.name == "qa" && req.query.brand && req.query.brand == "baiwei") {
+        // res.redirect('/boxingCat/index')
+        res.sendFile(root + "/acs/code/public/html/game.html");
+    } else {
+        next()
+    }
+})
+//拳击猫
+router.get('/boxingCat/index', function (req, res) {
+    res.sendFile(root + "/acs/code/public/html/boxingCat_index.html");
+})
+
+router.get('/boxingCat/rotate', function (req, res) {
+    res.sendFile(root + "/acs/code/public/html/boxingCat_rotate.html");
+})
+
+
 //POST upload.array('file',1)
 // router.post('/doRegister', upload.array('file', 1), function (req, res) {
 router.post('/doRegister', upload.array(), function (req, res) {
@@ -145,7 +165,7 @@ router.post('/doRegister', upload.array(), function (req, res) {
                     }
                 })
             });
-        }).on('error',function(err){
+        }).on('error', function (err) {
             logService.logger.info('https error');
             logService.logger.info(JSON.stringify(err));
         })
@@ -165,7 +185,7 @@ router.post('/doRegister', upload.array(), function (req, res) {
 
         // })
     } catch (e) {
-        logService.logger.error(JSON.stringify(e),'catch了');
+        logService.logger.error(JSON.stringify(e), 'catch了');
         res.writeHead(500);
         res.end(JSON.stringify(e));
     } finally {
