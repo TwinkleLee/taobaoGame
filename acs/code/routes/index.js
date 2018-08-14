@@ -85,11 +85,24 @@ router.get('/game', function (req, res, next) {
     }
 })
 //拳击猫
-router.get('/boxingCat/index', function (req, res) {
+router.get('/game', function (req, res, next) {
+    console.log(req.query)
+    if (req.query.name && req.query.name == "qa" && req.query.brand && req.query.brand == "baiwei") {
+        // res.redirect('/boxingCat/index')
+        res.sendFile(root + "/acs/code/public/html/game.html");
+    } else {
+        next()
+    }
+})
+router.get('/test', function (req, res) {//测试_活动开始页
+    res.sendFile(root + "/acs/code/public/boxingCat/index.html");
+})
+
+router.get('/boxingCat/index', function (req, res) {//大屏端首页
     res.sendFile(root + "/acs/code/public/html/boxingCat_index.html");
 })
 
-router.get('/boxingCat/rotate', function (req, res) {
+router.get('/boxingCat/rotate', function (req, res) {//抽奖页
     res.sendFile(root + "/acs/code/public/html/boxingCat_rotate.html");
 })
 

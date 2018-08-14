@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <!--允许全屏-->
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <title>拳击猫创新口味，由你来定</title>
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="spm-id" content="a1z51.23492108" />
+  <meta name="viewport" id="viewport" content="width=640,user-scalable=0, target-densitydpi=320">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <link href="./styles/reset.css" rel="stylesheet" type="text/css">
+  <script src="./js/jquery.min.js" type="text/javascript"></script>
+  <style>
+    .page1,
+    .page2,
+    .page3,
+    .page4,
+    .page5 {
+      display: none;
+    }
+
+    .bg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .fixed {
+      position: fixed;
+    }
+
+    .title {
+      width: 80%;
+      height: 12vh;
+      top: 6%;
+      left: 10%;
+    }
+
+    .container {
+      width: 100%;
+      height: 82%;
+      top: 18%;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .container>img {
+      width: 34%;
+      margin: 4vh 8% 0;
+      height: 36%;
+    }
+
+    .bottom {
+      width: 100%;
+      top: 88%;
+      height: 12%;
+      display: flex;
+    }
+
+    .bottom div {
+      flex-grow: 1;
+    }
+
+    .bottom img {
+      width: 30vw;
+      height: 10vw;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <img src="./source/bg.png" class="bg fixed">
+  <img id="close" src="./source/close.png" style="z-index:999;position:fixed;width:8vw;height:8vw;top:3vw;right:3vw;">
+
+  <img class="page0 fixed" src="./source/start/cover.png" style="width:100%;height:100%;top:0%;left:0%;" onclick="playVedio();">
+  <video class="page0 fixed" src="./source/mp4.mp4" onended="videoEnd()"></video>
+
+  <img class="page1 fixed" src="./source/start/start.png" style="width:80%;height:90%;top:8%;left:10%;">
+  <img class="page1 fixed" onclick="changePage(2)" src="./source/start/button.png" style="width:70%;height:10%;top:70%;left:15%;">
+
+  <img class="page2 title fixed" src="./source/all/title.png">
+  <div class="page2">
+    <div class="container fixed">
+      <img onclick="changePage(4,'黄啤')" src="./source/all/1.png">
+      <img onclick="changePage(3,'白啤')" src="./source/all/2.png">
+      <img onclick="changePage(4,'琥珀')" src="./source/all/3.png">
+      <img onclick="changePage(3,'黑啤')" src="./source/all/4.png">
+    </div>
+    <img class="bg fixed" id="tutor" onclick="hideTutor()" src="./source/tutor.png" style="background:rgba(0,0,0,0.3)">
+  </div>
+  <div class="page3">
+    <img class="title fixed" src="">
+    <div class="container fixed" style="height: 70%;">
+      <img onclick="changePage(5,0)" src="" style="width:34%;height:36%;margin:4vh 33% 0;">
+      <img onclick="changePage(5,1)" src="" style="width:34%;height:36%;margin:4vh 33% 0;">
+      <div class="bottom fixed">
+        <img src="./source/back.png" onclick="changePage(2)">
+      </div>
+    </div>
+  </div>
+  <div class="page4">
+    <img class="title fixed" src="">
+    <div class="container fixed" style="height: 70%;">
+      <img onclick="changePage(5,0)" src="./source/all/1.png">
+      <img onclick="changePage(5,1)" src="./source/all/2.png">
+      <img onclick="changePage(5,2)" src="./source/all/3.png">
+      <img onclick="changePage(5,3)" src="./source/all/4.png">
+      <div class="bottom fixed">
+        <img src="./source/back.png" onclick="changePage(2)">
+      </div>
+    </div>
+  </div>
+  <div class="page5">
+    <img class="container fixed" style="height: 80%;top:5vh;" src="">
+    <div class="bottom fixed">
+      <div>
+        <img id="back" src="./source/back.png">
+      </div>
+      <div>
+        <img src="./source/choose.png" onclick="goQuestionaire()">
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+
+  if (getRequest().screen) {
+    $('#close').click(() => {
+      window.location.href = 'https://nodejs.ews.m.jaeapp.com/boxingCat/index'//大屏的二维码页面
+    })
+  } else {
+    $('#close').css('display', 'none');
+  }
+
+
+  var nowParam, nowIndex, detail;
+  function changePage(index, param) {
+    $('.page0,.page1,.page2,.page3,.page4,.page5').fadeOut();
+    $('.page' + index).css('display', 'block');
+    if (index < 5 && param) {
+      for (var i = 0; i < $('.page' + index + '>div>img').length; i++) {
+        $('.page' + index + '>div>img').eq(i).attr('src', './source/' + param + '/' + i + '.png')
+      }
+      $('.page' + index + '>.title').attr('src', './source/' + param + '/title.png')
+      nowParam = param;
+      nowIndex = index;
+    } else if (index == 5) {
+      detail = param;
+      $('.page5>img').attr('src', './source/' + nowParam + '/' + param + '_detail.png')
+      $('.page5 #back').one('click', () => {
+        changePage(nowIndex, nowParam);
+      })
+    }
+  }
+
+  function playVedio() {
+    $('video').fadeIn()
+    $('video')[0].play()
+  }
+
+  function videoEnd() {
+    changePage(1)
+  }
+
+  function hideTutor() {
+    $('#tutor').fadeOut()
+  }
+
+  function goQuestionaire() {
+    window.location.href = "www.baidu.com?param=" + nowParam + '&detail=' + detail + '&mixname=' + getRequest().mixname
+  }
+
+
+  function getRequest() {
+    var url = location.search;
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+      var str = url.substr(1);
+      strs = str.split("&");
+      for (var i = 0; i < strs.length; i++) {
+        theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+      }
+    }
+    return theRequest;
+  }
+
+
+</script>
+
+</html>
