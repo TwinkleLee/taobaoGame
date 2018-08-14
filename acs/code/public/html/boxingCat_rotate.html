@@ -33,7 +33,7 @@
 
 <body>
   <img src="/img/boxingCat/bg.png" style="position:fixed;width:100%;height:100%;">
-  <img id="close" src="./img/close.png" style="z-index:9999;position:fixed;width:8vw;height:8vw;top:3vw;right:3vw;">
+  <img id="close" src="/img/boxingCat/close.png" style="z-index:9999;position:fixed;width:8vw;height:8vw;top:3vw;right:3vw;">
 
   <img class="page0" src="/img/boxingCat/jiang.png" style="position:fixed;width:80%;height:40vh;top: 20vh;left:10%;">
   <img class="page0 xiexie" src="/img/boxingCat/xiexie.png" style="position:fixed;width:70%;height:10vh;top: 65vh;left:15%;">
@@ -101,11 +101,10 @@
           $('.page2').fadeIn(1000)
         } else if (i == 1) {//抵用券
           if (getRequest().screen) {
-            //调接口获取二维码
+            //展示二维码(即领券地址)
             $('.page1').fadeOut(1000)
             $('.page6').fadeIn(1000)
           } else {
-            //调接口获得领券链接
             $('#prize').one(click, () => {
               window.location.href = ''//领券地址
             })
