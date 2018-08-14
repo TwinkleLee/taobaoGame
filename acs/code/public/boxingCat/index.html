@@ -80,12 +80,12 @@
   </style>
 </head>
 
-<body>
+<body style="background: #000;">
   <img src="./source/bg.png" class="bg fixed">
   <img id="close" src="./source/close.png" style="z-index:999;position:fixed;width:8vw;height:8vw;top:3vw;right:3vw;">
 
   <img class="page0 fixed" src="./source/start/cover.png" style="width:100%;height:100%;top:0%;left:0%;" onclick="playVedio();">
-  <video class="page0 fixed" src="./source/mp4.mp4" onended="videoEnd()"></video>
+  <video webkit-playsinline='true' playsinline='true' preload="auto" class="page0 fixed" src="./source/mp4.mp4" onended="videoEnd()"></video>
 
   <img class="page1 fixed" src="./source/start/start.png" style="width:80%;height:90%;top:8%;left:10%;">
   <img class="page1 fixed" onclick="changePage(2)" src="./source/start/button.png" style="width:70%;height:10%;top:70%;left:15%;">
@@ -167,11 +167,13 @@
   }
 
   function playVedio() {
-    $('video').fadeIn()
+    $('video').css('display','block')
+    $('img').css('opacity',0);
     $('video')[0].play()
   }
 
   function videoEnd() {
+    $('img').css('opacity',1);
     changePage(1)
   }
 
