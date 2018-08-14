@@ -94,41 +94,41 @@
         })
 
         //验证码
-        // $('#verticicateImage').click(function () {
-        //     var pattern = /^1[34578]\d{9}$/;
-        //     phoneNumber = $('#phone').val();
-        //     if (pattern.test(phoneNumber)) {
-        //         verticicate = '' + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10)
+        $('#verticicateImage').click(function () {
+            var pattern = /^1[34578]\d{9}$/;
+            phoneNumber = $('#phone').val();
+            if (pattern.test(phoneNumber)) {
+                verticicate = '' + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10)
 
-        //         $.post('/verticicate', {
-        //             mobile: phoneNumber,
-        //             verticicate: verticicate
-        //         }, function (result) {
-        //             // alert(result)
-        //             // Tida.toast(JSON.parse(result).message)
-        //             Tida.toast("验证码已发送,15秒后可重新尝试");
+                $.post('/verticicate', {
+                    mobile: phoneNumber,
+                    verticicate: verticicate
+                }, function (result) {
+                    // alert(result)
+                    // Tida.toast(JSON.parse(result).message)
+                    Tida.toast("验证码已发送,15秒后可重新尝试");
 
-        //         })
+                })
 
-        //         //此处调用接口发送验证码
-        //         // Tida.toast("验证码已发送,15秒后可重新尝试");
-        //         $('#verticicateImage').css('display', 'none');
-        //         setTimeout(() => {
-        //             $('#verticicateImage').css('display', 'block');
-        //         }, 15000);
-        //     } else {
-        //         Tida.toast("请填写正确的手机号");
-        //     }
-        // })
+                //此处调用接口发送验证码
+                // Tida.toast("验证码已发送,15秒后可重新尝试");
+                $('#verticicateImage').css('display', 'none');
+                setTimeout(() => {
+                    $('#verticicateImage').css('display', 'block');
+                }, 15000);
+            } else {
+                Tida.toast("请填写正确的手机号");
+            }
+        })
 
 
         //提交注册
         $(d.forms['registerForm']).on('submit', function (e) {
             e.preventDefault();
-            // if (phoneNumber != $('#phone').val() || verticicate != $('#verticicate').val()) {
-            //     Tida.toast('请填写正确的验证码')
-            //     return
-            // }
+            if (phoneNumber != $('#phone').val() || verticicate != $('#verticicate').val()) {
+                Tida.toast('请填写正确的验证码')
+                return
+            }
 
             var username = $("#name").val(),
                 mixNick = localStorage.getItem("mixNick"), formData,

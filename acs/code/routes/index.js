@@ -395,7 +395,7 @@ router.post('/verticicate', function (req, res) {
     var params = req.body;
     var options = {
         method: 'POST',
-        url: 'http://api.sms.cn/sms/',
+        url: 'https://api.sms.cn/sms/',
         headers:
         {
             'Postman-Token': '687fbcc3-0dcc-4852-99f9-5979aab6ee7e',
