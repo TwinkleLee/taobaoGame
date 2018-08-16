@@ -11,13 +11,13 @@
   <meta name="spm-id" content="a1z51.23492108" />
   <meta name="viewport" id="viewport" content="width=640,user-scalable=0, target-densitydpi=320">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>拳击猫创新口味，由你来定</title>
   <link rel="apple-touch-icon" href="/img/favicon.png">
   <link rel="Shortcut Icon" href="/img/favicon.png" type="image/x-icon">
   <link href="/styles/reset.css" rel="stylesheet" type="text/css">
-  <script src="//g.alicdn.com/tmapp/tida/3.2.97/tida.js?appkey=23492108"></script>
+  <!-- <script src="//g.alicdn.com/tmapp/tida/3.2.97/tida.js?appkey=23492108"></script> -->
   <script src="/js/jquery.min.js" type="text/javascript"></script>
   <script src="/js/jquery.rotate/jquery.rotate.js" type="text/javascript"></script>
-  <!-- <script src="//g.alicdn.com/tmapp/animation-data/4.1.37/jc/tools/vconsole.min.js"></script> -->
 </head>
 <style>
   .page0,
@@ -28,6 +28,46 @@
   .page5,
   .page6 {
     display: none;
+  }
+
+  .animated1 {
+    animation-iteration-count: infinite;
+    animation-duration: 2s;
+    animation-name: animated1;
+  }
+
+  .animated2 {
+    animation-fill-mode: both;
+    animation-duration: 1s;
+    animation-name: animated2;
+  }
+
+  @keyframes animated1 {
+    10% {
+      transform: rotate(15deg);
+    }
+    20% {
+      transform: rotate(-10deg);
+    }
+    30% {
+      transform: rotate(5deg);
+    }
+    40% {
+      transform: rotate(-5deg);
+    }
+    50%,
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  @keyframes animated2 {
+    0% {
+      right: 75%;
+    }
+    100% {
+      right: 45%;
+    }
   }
 </style>
 
@@ -41,6 +81,9 @@
   <img class="page1" src="/img/boxingCat/quan.png" style="position:fixed;width:86%;height:68vw;top: 56vw;left:7%;">
   <img class="page1" id="zhuanpan" src="/img/boxingCat/zhuanpan.png" style="position:fixed;width:80%;height:80vw;top: 40vw;left:10%;">
   <img class="page1" id="zhizheng" src="/img/boxingCat/zhizheng.png" style="position:fixed;width:26.4%;height:46.2vw;left:37%;top:47vw;">
+  <img class="page1 animated1" src="/img/boxingCat/cheer.png" style="position:fixed;width:40%;height:24vw;top:82%;left:58%;">
+  <img class="page1 animated2" src="/img/boxingCat/cat.png" style="position:fixed;width:42%;height:30vw;top:74%;right:100%;">
+
   <img class="page2" src="/img/boxingCat/huojiang.png" style="position:fixed;width:100%;height:100%;">
   <img class="page2" id="jiangpin" src="" style="position:fixed;width:80%;height:40vh;top:25vh;left:10%;">
   <img class="page2" id="queren" src="/img/boxingCat/queren.png" style="position:fixed;width:50%;height:9vh;top:75vh;left:25%;">
@@ -55,11 +98,15 @@
   <img class="page5 lianjie" src="/img/boxingCat/lianjie.png" style="position:fixed;width:80%;height:10vh;top:72vh;left:10%;">
 
   <img class="page6" src="/img/boxingCat/screen/award.png" style="position:fixed;width:90%;height:90%;top:5%;left:5%;">
-  <img class="page6" src="" style="position:fixed;width:35%;height:32vw;top:56%;left:31%;background:red;">
-
+  <img class="page6" src="/img/boxingCat/screen/eee.png" style="position:fixed;width:35%;height:32vw;top:56%;left:31%;background:red;">
 
 </body>
 <script>
+
+  document.oncontextmenu = function () {
+    return false;
+  };
+
   (function (win, doc) {
     //看是否是大屏端
     if (getRequest().screen) {
@@ -70,6 +117,10 @@
         window.location.href = '/boxingCat/index'//大屏的二维码页面
       })
     } else {
+      $('.xiexie').click(() => {
+        // Tida.popWindow();
+        window.open("", "_self").close()
+      })
       $('#close').css('display', 'none');
 
       // $('.lianjie').click(() => {
@@ -78,65 +129,103 @@
     }
 
     if (getRequest().mixname) {
-      if (false) {//调接口查看mixname是否已经中奖过
-        $('.page0').fadeIn();
-      } else {
-        $('.page1').fadeIn();
-      }
+      $.post('https://taobao.troncell.com/api/v1/Taobao/IsAwarded', {
+        mixName: getRequest().mixname,
+        tenantId: 2007
+      }, function (result) {
+        // alert(result.message)
+        if (result.status == 'OK') {
+          if (result.data) {//调接口查看mixname是否已经中奖过
+            $('.page0').fadeIn();
+          } else {
+            $('.page1').fadeIn();
+            goRotate()
+
+          }
+        }
+      })
+
     } else {//已经中奖页面
       $('.page0').fadeIn();
     }
 
-    //调接口查看抽中了什么
-    var i = 1;//0~4
-    $('#jiangpin').attr('src', '/img/boxingCat/pi.png')//T,kai
 
-
-    var angle = Math.floor(1080 + 72 * i + 10 + Math.random() * 52);
-    $('#zhizheng').one('click', () => {
-      $('#zhuanpan').animate({ rotate: angle }, 2500)
-      setTimeout(function () {
-        if (i == 0 || i == 3 | i == 4) {
-          $('.page1').fadeOut(1000)
-          $('.page2').fadeIn(1000)
-        } else if (i == 1) {//抵用券
-          if (getRequest().screen) {
-            //展示二维码(即领券地址)
-            $('.page1').fadeOut(1000)
-            $('.page6').fadeIn(1000)
-          } else {
-            $('#prize').one(click, () => {
-              window.location.href = ''//领券地址
-            })
-            $('.page1').fadeOut(1000)
-            $('.page5').fadeIn(1000)
-          }
-        } else if (i == 2) {//谢谢
-          $('.page1').fadeOut(1000)
-          $('.page4').fadeIn(1000)
+    function goRotate() {
+      //调接口查看抽中了什么
+      $.post('https://taobao.troncell.com/api/v1/Taobao/LotteryAward', {
+        mixName: getRequest().mixname,
+        tenantId: 2007
+      }, function (result) {
+        var i;//0~4
+        // alert(result.data.name)
+        if (result.status != 'OK') return
+        if (result.data.name == '10元无门槛电子抵用券') {
+          i = 1
+        } else if (result.data.name == '拳击猫开瓶器') {
+          $('#jiangpin').attr('src', '/img/boxingCat/kai.png')//T,kai
+          i = 0
+        } else if (result.data.name == '拳击猫Tshirt') {
+          $('#jiangpin').attr('src', '/img/boxingCat/T.png')
+          i = 4
+        } else if (result.data.name == '餐厅啤酒代金券') {
+          $('#jiangpin').attr('src', '/img/boxingCat/pi.png')
+          i = 3
+        } else if (result.data.name == '谢谢参与') {
+          i = 2
         }
-      }, 3000)
-    })
 
-    $('#queren').click(() => {
-      $('.page3').fadeIn();
-    })
+        var angle = Math.floor(1080 + 72 * i + 10 + Math.random() * 52);
+        $('#zhizheng').one('click', () => {
+          $('#zhuanpan').animate({ rotate: angle }, 2500)
+          setTimeout(function () {
+            if (i == 0 || i == 3 | i == 4) {
+              $('.page1').fadeOut(1000)
+              $('.page2').fadeIn(1000)
+            } else if (i == 1) {//抵用券
+              if (getRequest().screen) {
+                //展示二维码(即领券地址)
+                $('.page1').fadeOut(1000)
+                $('.page6').fadeIn(1000)
+              } else {
+                $('#prize').one('click', () => {
+                  window.location.href = 'https://taoquan.taobao.com/coupon/unify_apply.htm?sellerId=2015024477&activityId=267b7541895f4d4b9ce7678d4569338a'//领券地址
+                })
+                $('.page1').fadeOut(1000)
+                $('.page5').fadeIn(1000)
+              }
+            } else if (i == 2) {//谢谢
+              $('.page1').fadeOut(1000)
+              $('.page4').fadeIn(1000)
+            }
+          }, 3000)
+        })
 
-    $('.page3').click(() => {
-      $('.page2,.page3').fadeOut();
-      $('.page0').fadeIn();
-    })
+        $('#queren').click(() => {
+          $('.page3').fadeIn();
+        })
+
+        $('.page3').click(() => {
+          $('.page2,.page3').fadeOut();
+          $('.page0').fadeIn();
+        })
+      })
+    }
+
 
 
 
     function getRequest() {
-      var url = location.search; //获取url中"?"符后的字串   
+      var url = location.search;
       var theRequest = new Object();
       if (url.indexOf("?") != -1) {
         var str = url.substr(1);
         strs = str.split("&");
         for (var i = 0; i < strs.length; i++) {
-          theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+          var a = ''
+          if (strs[i].substr(str.length - 1, 1) == '=') {
+            a = '='
+          }
+          theRequest[strs[i].split("=")[0]] = strs[i].split("=")[1] + a;
         }
       }
       return theRequest;

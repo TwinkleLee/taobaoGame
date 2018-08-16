@@ -74,8 +74,20 @@
     video {
       width: 100%;
       height: 100%;
-      z-index: 9999;
+      z-index: 9998;
       display: none;
+    }
+
+    #skip {
+      display: none;
+      position: fixed;
+      right: 6vw;
+      top:5%;
+      z-index: 9999;
+      padding: 2vw 3.5vw;
+      border-radius: 5vw;
+      background: #ccc;
+      font-size: 3vw;
     }
   </style>
 </head>
@@ -86,6 +98,7 @@
 
   <img class="page0 fixed" src="./source/start/cover.png" style="width:100%;height:100%;top:0%;left:0%;" onclick="playVedio();">
   <video webkit-playsinline='true' playsinline='true' preload="auto" class="page0 fixed" src="./source/mp4.mp4" onended="videoEnd()"></video>
+  <span id="skip">SKIP</span>
 
   <img class="page1 fixed" src="./source/start/start.png" style="width:80%;height:90%;top:8%;left:10%;">
   <img class="page1 fixed" onclick="changePage(2)" src="./source/start/button.png" style="width:70%;height:10%;top:70%;left:15%;">
@@ -93,10 +106,10 @@
   <img class="page2 title fixed" src="./source/all/title.png">
   <div class="page2">
     <div class="container fixed">
-      <img onclick="changePage(4,'黄啤')" src="./source/all/1.png">
-      <img onclick="changePage(3,'白啤')" src="./source/all/2.png">
-      <img onclick="changePage(4,'琥珀')" src="./source/all/3.png">
-      <img onclick="changePage(3,'黑啤')" src="./source/all/4.png">
+      <img onclick="changePage(4,'huangpi')" src="./source/all/1.png">
+      <img onclick="changePage(3,'baipi')" src="./source/all/2.png">
+      <img onclick="changePage(4,'hupo')" src="./source/all/3.png">
+      <img onclick="changePage(3,'heipi')" src="./source/all/4.png">
     </div>
     <img class="bg fixed" id="tutor" onclick="hideTutor()" src="./source/tutor.png" style="background:rgba(0,0,0,0.3)">
   </div>
@@ -137,8 +150,13 @@
 </body>
 <script>
 
+
+  document.oncontextmenu = function () {
+    return false;
+  }
+
   if (getRequest().screen) {
-    $('#close').click(() => {
+    $('#close').click(function () {
       window.location.href = 'https://nodejs.ews.m.jaeapp.com/boxingCat/index'//大屏的二维码页面
     })
   } else {
@@ -160,21 +178,31 @@
     } else if (index == 5) {
       detail = param;
       $('.page5>img').attr('src', './source/' + nowParam + '/' + param + '_detail.png')
-      $('.page5 #back').one('click', () => {
+      $('.page5 #back').one('click', function () {
         changePage(nowIndex, nowParam);
       })
     }
   }
 
   function playVedio() {
-    $('video').css('display','block')
-    $('img').css('opacity',0);
+    $('video').css('display', 'block')
+    $('img').css('opacity', 0);
     $('video')[0].play()
+    if (getRequest().online) {
+      $('#skip').css('display', 'block').one('click', function () {
+        $('video')[0].pause()
+        videoEnd()
+      })
+    }
   }
 
+  var hasEnd;
   function videoEnd() {
-    $('img').css('opacity',1);
+    if (hasEnd) return
+    $('img').css('opacity', 1);
     changePage(1)
+    hasEnd = true;
+    $('#skip').css('display', 'none')
   }
 
   function hideTutor() {
@@ -182,18 +210,29 @@
   }
 
   function goQuestionaire() {
-    window.location.href = "www.baidu.com?param=" + nowParam + '&detail=' + detail + '&mixname=' + getRequest().mixname
+    var url = "https://nodejs.ews.m.jaeapp.com/boxingCat/rotate?param=" + nowParam + '&detail=' + detail
+    if (getRequest().screen) {
+      url += '&screen=1'
+    }
+    if (getRequest().mixname) {
+      url = url + '&mixname=' + getRequest().mixname
+    }
+    window.location.href = url
   }
 
 
   function getRequest() {
-    var url = location.search;
+    var url = location.search; //获取url中"?"符后的字串   
     var theRequest = new Object();
     if (url.indexOf("?") != -1) {
       var str = url.substr(1);
       strs = str.split("&");
       for (var i = 0; i < strs.length; i++) {
-        theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+        var a = ''
+        if (strs[i].substr(str.length - 1, 1) == '=') {
+          a = '='
+        }
+        theRequest[strs[i].split("=")[0]] = strs[i].split("=")[1] + a;
       }
     }
     return theRequest;

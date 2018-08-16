@@ -5,12 +5,12 @@
         <meta charset="utf-8" />
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <!--允许全屏-->
-        <title>GAME</title>
         <meta content="yes" name="apple-mobile-web-app-capable">
         <meta content="yes" name="apple-touch-fullscreen">
         <meta content="telephone=no,email=no" name="format-detection">
         <meta name="spm-id" content="a1z51.23492108" />
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+        <title>拳击猫创新口味，由你来定</title>
         <link rel="apple-touch-icon" href="/img/favicon.png">
         <link href="/styles/reset.css" rel="stylesheet" type="text/css">
         <link rel="Shortcut Icon" href="./img/favicon.png" type="image/x-icon">
@@ -30,6 +30,9 @@
 </body>
 
 <script>
+
+
+
         $.ajaxSetup({
                 cache: false //关闭AJAX缓存
         });
@@ -40,25 +43,100 @@
                 combo: 0,
                 console: 1
         }, function (e) {
+
                 Tida.showLoading("Loading...");
                 Tida.doAuth(true, function (data) {
                         if (data.finish) {
                                 Tida.mixNick({}, function (d) {
-                                        mixNick = d.mixnick;
-                                        //调接口查看是否已经参与过
-                                        if (true) {
-                                                window.location.href = "https://nodejs.ews.m.jaeapp.com//boxingCat/rotate"
-                                        } else {
-                                                if (getRequest().screen) { //线下则显示开始按钮
-                                                        $('img').css('display', 'block');
-                                                        $('#confirm').one(click,()=>{
-                                                                $('#confirm').fadeOut()
-                                                                //将actionId+mixname告知后台,并关闭页面
+                                        var mixNick = d.mixnick;
+                                        if (getRequest().screen) {
+                                                //记录扫码的用户
+                                                $.post('https://taobao.troncell.com/api/v1/Taobao/PostDataByUser', {
+                                                        mixName: mixNick,
+                                                        actionId: getRequest().actionId,
+                                                        status: 'Waitting'
+                                                }, function (res) {
+                                                        if (res.status != 'OK') return
+                                                        //调接口查看是否已经参与过
+                                                        $.post('https://taobao.troncell.com/api/v1/Taobao/IsAwarded', {
+                                                                mixName: mixNick,
+                                                                tenantId: 2007
+                                                        }, function (result) {
+                                                                Tida.hideLoading();
+                                                                // alert(result.message)
+                                                                if (result.status == 'OK') {
+                                                                        if (result.data) {//已经中奖过了为true
+                                                                                window.location.href = "https://nodejs.ews.m.jaeapp.com/boxingCat/rotate"
+                                                                        } else {
+                                                                                // alert(res.data.actionId)
+                                                                                if (getRequest().actionId != res.data.actionId) {
+                                                                                        window.location.href = "https://jupage.taobao.com/wow/ju/act/baiwei?mixname=" + mixNick
+                                                                                        // window.location.href = "https://nodejs.ews.m.jaeapp.com/boxingCat/rotate?mixname=" + mixNick
+                                                                                } else {
+                                                                                        $('img').css('display', 'block');
+                                                                                        $('#confirm').one('click', function () {
+                                                                                                $('#confirm').fadeOut()
+                                                                                                //解锁大屏
+                                                                                                $.post('https://taobao.troncell.com/api/v1/Taobao/PostDataByUser', {
+                                                                                                        mixName: mixNick,
+                                                                                                        actionId: getRequest().actionId,
+                                                                                                        status: 'Done'
+                                                                                                }, function (result) {
+                                                                                                        Tida.popWindow();
+                                                                                                })
+                                                                                        })
+                                                                                }
+
+
+                                                                        }
+                                                                }
                                                         })
-                                                } else {//线上则前往线上首页
-                                                        window.location.href = "阿里提供链接?mixname=" + mixNick
-                                                }
+
+                                                })
+                                        } else {
+                                                $.post('https://taobao.troncell.com/api/v1/Taobao/PostData4Qrcode', {
+                                                        subKey: 'fcf4c6b9ac944ce0b727f14502ed',
+                                                        game: 'qa',
+                                                        status: 'Waitting'
+                                                }, function (result) {
+                                                        if (result.status == 'OK') {
+                                                                var actionId = getRequest2(result.data).actionId
+                                                                $.post('https://taobao.troncell.com/api/v1/Taobao/PostDataByUser', {
+                                                                        mixName: mixNick,
+                                                                        actionId: actionId,
+                                                                        status: 'Waitting'
+                                                                }, function (res) {
+                                                                        if (res.status != 'OK') return
+
+                                                                        //调接口查看是否已经参与过
+                                                                        $.post('https://taobao.troncell.com/api/v1/Taobao/IsAwarded', {
+                                                                                mixName: mixNick,
+                                                                                tenantId: 2007
+                                                                        }, function (result) {
+                                                                                Tida.hideLoading();
+                                                                                // alert(result.message)
+                                                                                if (result.status == 'OK') {
+                                                                                        if (result.data) {//已经中奖过了为true
+                                                                                                window.location.href = "https://nodejs.ews.m.jaeapp.com/boxingCat/rotate"
+                                                                                        } else {
+                                                                                                window.location.href = "https://jupage.taobao.com/wow/ju/act/baiwei?mixname=" + mixNick
+                                                                                                // window.location.href = "https://nodejs.ews.m.jaeapp.com/boxingCat/rotate?mixname=" + mixNick
+                                                                                        }
+                                                                                }
+                                                                        })
+
+
+
+                                                                })
+
+                                                        }
+                                                })
+
+
+
                                         }
+
+
 
 
                                 })
@@ -74,7 +152,28 @@
                         var str = url.substr(1);
                         strs = str.split("&");
                         for (var i = 0; i < strs.length; i++) {
-                                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                                var a = ''
+                                if (strs[i].substr(str.length - 1, 1) == '=') {
+                                        a = '='
+                                }
+                                theRequest[strs[i].split("=")[0]] = strs[i].split("=")[1] + a;
+                        }
+                }
+                return theRequest;
+        }
+
+        function getRequest2(url) {
+                url = '?'+url.split('?')[1];
+                var theRequest = new Object();
+                if (url.indexOf("?") != -1) {
+                        var str = url.substr(1);
+                        strs = str.split("&");
+                        for (var i = 0; i < strs.length; i++) {
+                                var a = ''
+                                if (strs[i].substr(str.length - 1, 1) == '=') {
+                                        a = '='
+                                }
+                                theRequest[strs[i].split("=")[0]] = strs[i].split("=")[1] + a;
                         }
                 }
                 return theRequest;
