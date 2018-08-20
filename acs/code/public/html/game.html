@@ -116,9 +116,20 @@
                                                                                 Tida.hideLoading();
                                                                                 // alert(result.message)
                                                                                 if (result.status == 'OK') {
-                                                                                        if (result.data) {//已经中奖过了为true
-                                                                                                window.location.href = "https://nodejs.ews.m.jaeapp.com/boxingCat/rotate"
+                                                                                        if (result.data) {//已经抽奖过了为true
+                                                                                                // alert(1)
+                                                                                                // alert(JSON.stringify(result.userAward))
+                                                                                                if (result.userAward.isConfirmed) {
+                                                                                                        // alert(2)
+                                                                                                        window.location.href = "https://nodejs.ews.m.jaeapp.com/boxingCat/rotate"
+                                                                                                } else {
+                                                                                                        // alert(3)
+                                                                                                        // window.location.href = "https://jupage.taobao.com/wow/ju/act/baiwei?mixname=" + mixNick
+                                                                                                        window.location.href = "https://nodejs.ews.m.jaeapp.com/boxingCat/rotate?mixname=" + mixNick
+                                                                                                }
                                                                                         } else {
+                                                                                                // alert(mixNick)
+                                                                                                // window.location.href = "https://nodejs.ews.m.jaeapp.com/test?skip=1&mixname=" + mixNick
                                                                                                 window.location.href = "https://jupage.taobao.com/wow/ju/act/baiwei?mixname=" + mixNick
                                                                                                 // window.location.href = "https://nodejs.ews.m.jaeapp.com/boxingCat/rotate?mixname=" + mixNick
                                                                                         }
@@ -162,8 +173,9 @@
                 return theRequest;
         }
 
+
         function getRequest2(url) {
-                url = '?'+url.split('?')[1];
+                url = '?' + url.split('?')[1];
                 var theRequest = new Object();
                 if (url.indexOf("?") != -1) {
                         var str = url.substr(1);

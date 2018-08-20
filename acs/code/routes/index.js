@@ -102,11 +102,14 @@ router.get('/boxingCat/index', function (req, res) {//大屏端首页
     res.sendFile(root + "/acs/code/public/html/boxingCat_index.html");
 })
 
+
 router.get('/boxingCat/rotate', function (req, res) {//抽奖页
     res.sendFile(root + "/acs/code/public/html/boxingCat_rotate.html");
 })
 
-
+router.get('/boxingCat/online', function (req, res) {//线上领奖页
+    res.sendFile(root + "/acs/code/public/html/boxingCat_online.html");
+})
 //POST upload.array('file',1)
 // router.post('/doRegister', upload.array('file', 1), function (req, res) {
 router.post('/doRegister', upload.array(), function (req, res) {

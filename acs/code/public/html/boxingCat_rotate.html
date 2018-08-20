@@ -15,7 +15,6 @@
   <link rel="apple-touch-icon" href="/img/favicon.png">
   <link rel="Shortcut Icon" href="/img/favicon.png" type="image/x-icon">
   <link href="/styles/reset.css" rel="stylesheet" type="text/css">
-  <!-- <script src="//g.alicdn.com/tmapp/tida/3.2.97/tida.js?appkey=23492108"></script> -->
   <script src="/js/jquery.min.js" type="text/javascript"></script>
   <script src="/js/jquery.rotate/jquery.rotate.js" type="text/javascript"></script>
 </head>
@@ -69,6 +68,7 @@
       right: 45%;
     }
   }
+
   /* *{touch-action:none} */
 </style>
 
@@ -102,140 +102,216 @@
   <img class="page6" src="/img/boxingCat/screen/eee.png" style="position:fixed;width:35%;height:32vw;top:56%;left:31%;background:red;">
 
 </body>
-<script>
 
+<script>
   document.oncontextmenu = function () {
     return false;
   };
 
-  (function (win, doc) {
-    //看是否是大屏端
-    if (getRequest().screen) {
-      $('.xiexie').click(() => {
-        window.location.href = '/boxingCat/index'//大屏的二维码页面
-      })
-      $('#close').click(() => {
-        window.location.href = '/boxingCat/index'//大屏的二维码页面
-      })
-    } else {
-      $('.xiexie').click(() => {
-        // Tida.popWindow();
-        window.open("", "_self").close()
-      })
-      $('#close').css('display', 'none');
+  // (function (win, doc) {
+  //看是否是大屏端
+  if (getRequest().screen) {
+    $('.xiexie').click(function () {
+      window.location.href = '/boxingCat/index'//大屏的二维码页面
+    })
+    $('#close').click(function () {
+      window.location.href = '/boxingCat/index'//大屏的二维码页面
+    })
+  } else {
+    $('.xiexie').click(function () {
+      // Tida.popWindow();
+      // window.open("", "_self").close()
+    })
+    $('#close').css('display', 'none');
 
-      // $('.lianjie').click(() => {
-      //   window.location.href = ''//淘宝店
-      // })
-    }
-
-    if (getRequest().mixname) {
-      $.post('https://taobao.troncell.com/api/v1/Taobao/IsAwarded', {
-        mixName: getRequest().mixname,
-        tenantId: 2007
-      }, function (result) {
-        // alert(result.message)
-        if (result.status == 'OK') {
-          if (result.data) {//调接口查看mixname是否已经中奖过
+    $('.lianjie').click(function () {
+      window.location.href = 'https://abinbev.m.tmall.com/?ut_sk=1.WiF9HoFh%2BNADAM7RJ5yxN5qp_21380790_1534494166592.DingTalk.shop&weexShopSubTab=shopindex&sourceType=other&weexShopTab=shopindexbar&suid=1A6BA6FA-FE9C-4D96-B245-1B95FD863191&un=90ffb643e3ee4bb22040bd82ddc2e1ea&share_crt_v=1&cpp=1&shareurl=true&spm=a313p.22.1sk.964972536302&short_name=h.3eKjbni&app=chrome'//淘宝店
+    })
+  }
+  var userId, awardId;
+  if (kindId('mixname')) {
+    var mixname = decodeURI(kindId('mixname'))
+    $.post('https://taobao.troncell.com/api/v1/Taobao/IsAwarded', {
+      mixName: mixname,
+      tenantId: 2007
+    }, function (result) {
+      if (result.status == 'OK') {
+        if (result.data) {//调接口查看mixname是否已经中奖过
+          if (result.userAward.isConfirmed) {
             $('.page0').fadeIn();
           } else {
-            $('.page1').fadeIn();
-            goRotate()
-
-          }
-        }
-      })
-
-    } else {//已经中奖页面
-      $('.page0').fadeIn();
-    }
-
-
-    function goRotate() {
-      //调接口查看抽中了什么
-      $.post('https://taobao.troncell.com/api/v1/Taobao/LotteryAward', {
-        mixName: getRequest().mixname,
-        tenantId: 2007
-      }, function (result) {
-        var i;//0~4
-        // alert(result.data.name)
-        if (result.status != 'OK') return
-        if (result.data.name == '10元无门槛电子抵用券') {
-          i = 1
-        } else if (result.data.name == '拳击猫开瓶器') {
-          $('#jiangpin').attr('src', '/img/boxingCat/kai.png')//T,kai
-          i = 0
-        } else if (result.data.name == '拳击猫Tshirt') {
-          $('#jiangpin').attr('src', '/img/boxingCat/T.png')
-          i = 4
-        } else if (result.data.name == '餐厅啤酒代金券') {
-          $('#jiangpin').attr('src', '/img/boxingCat/pi.png')
-          i = 3
-        } else if (result.data.name == '谢谢参与') {
-          i = 2
-        }
-
-        var angle = Math.floor(1080 + 72 * i + 10 + Math.random() * 52);
-        $('#zhizheng').one('click', () => {
-          $('#zhuanpan').animate({ rotate: angle }, 2500)
-          setTimeout(function () {
+            userId = result.userAward.id;
+            awardId = result.userAward.award.name;
+            var i;
+            if (awardId == '10元无门槛电子抵用券') {
+              i = 1
+            } else if (awardId == '拳击猫开瓶器') {
+              $('#jiangpin').attr('src', '/img/boxingCat/kai.png')//T,kai
+              i = 0
+            } else if (awardId == '拳击猫Tshirt') {
+              $('#jiangpin').attr('src', '/img/boxingCat/T.png')
+              i = 4
+            } else if (awardId == '餐厅啤酒代金券') {
+              $('#jiangpin').attr('src', '/img/boxingCat/pi.png')
+              i = 3
+            } else if (awardId == '谢谢参与') {
+              i = 2
+            }
             if (i == 0 || i == 3 | i == 4) {
-              $('.page1').fadeOut(1000)
               $('.page2').fadeIn(1000)
             } else if (i == 1) {//抵用券
               if (getRequest().screen) {
                 //展示二维码(即领券地址)
-                $('.page1').fadeOut(1000)
                 $('.page6').fadeIn(1000)
               } else {
-                $('#prize').one('click', () => {
-                  window.location.href = 'https://taoquan.taobao.com/coupon/unify_apply.htm?sellerId=2015024477&activityId=267b7541895f4d4b9ce7678d4569338a'//领券地址
+                $('#prize').one('click', function () {
+                  $.post('https://taobao.troncell.com/api/v1/Taobao/ConfirmUserAward', {
+                    userAwardId: userId
+                  }, function () {
+                    window.location.href = 'https://taoquan.taobao.com/coupon/unify_apply.htm?sellerId=2015024477&activityId=267b7541895f4d4b9ce7678d4569338a'//领券地址
+                  })
                 })
-                $('.page1').fadeOut(1000)
                 $('.page5').fadeIn(1000)
               }
             } else if (i == 2) {//谢谢
-              $('.page1').fadeOut(1000)
-              $('.page4').fadeIn(1000)
+              $.post('https://taobao.troncell.com/api/v1/Taobao/ConfirmUserAward', {
+                userAwardId: userId
+              }, function () {
+                $('.page4').fadeIn(1000)
+              })
             }
-          }, 3000)
-        })
+            $('#queren').click(function () {
+              $.post('https://taobao.troncell.com/api/v1/Taobao/ConfirmUserAward', {
+                userAwardId: userId
+              }, function (res) {
+                $('.page3').fadeIn();
+              })
+            })
+            $('.page3').click(function () {
+              $('.page2,.page3').fadeOut();
+              $('.page0').fadeIn();
+            })
 
-        $('#queren').click(() => {
-          $('.page3').fadeIn();
-        })
-
-        $('.page3').click(() => {
-          $('.page2,.page3').fadeOut();
-          $('.page0').fadeIn();
-        })
-      })
-    }
-
-
-
-
-    function getRequest() {
-      var url = location.search;
-      var theRequest = new Object();
-      if (url.indexOf("?") != -1) {
-        var str = url.substr(1);
-        strs = str.split("&");
-        for (var i = 0; i < strs.length; i++) {
-          var a = ''
-          if (strs[i].substr(str.length - 1, 1) == '=') {
-            a = '='
           }
-          theRequest[strs[i].split("=")[0]] = strs[i].split("=")[1] + a;
+        } else {
+          $('.page1').fadeIn();
+          goRotate()
+
         }
       }
-      return theRequest;
+    })
+
+  } else {//已经中奖页面
+    $('.page0').fadeIn();
+  }
+
+  function goRotate() {
+    //调接口查看抽中了什么
+    var mixname = decodeURI(kindId('mixname'))
+    $.post('https://taobao.troncell.com/api/v1/Taobao/LotteryAward', {
+      mixName: mixname,
+      tenantId: 2007
+    }, function (result) {
+      var i;//0~4
+      if (result.status != 'OK') return
+      userId = result.data.id;
+      if (result.data.award.name == '10元无门槛电子抵用券') {
+        i = 1
+      } else if (result.data.award.name == '拳击猫开瓶器') {
+        $('#jiangpin').attr('src', '/img/boxingCat/kai.png')//T,kai
+        i = 0
+      } else if (result.data.award.name == '拳击猫Tshirt') {
+        $('#jiangpin').attr('src', '/img/boxingCat/T.png')
+        i = 4
+      } else if (result.data.award.name == '餐厅啤酒代金券') {
+        $('#jiangpin').attr('src', '/img/boxingCat/pi.png')
+        i = 3
+      } else if (result.data.award.name == '谢谢参与') {
+        i = 2
+      }
+      var angle = Math.floor(1080 + 72 * i + 10 + Math.random() * 52);
+      $('#zhizheng').one('click', function () {
+        $('#zhuanpan').animate({ rotate: angle }, 2500)
+        setTimeout(function () {
+          if (i == 0 || i == 3 | i == 4) {
+            $('.page1').fadeOut(1000)
+            $('.page2').fadeIn(1000)
+          } else if (i == 1) {//抵用券
+            if (getRequest().screen) {
+              //展示二维码(即领券地址)
+              $('.page1').fadeOut(1000)
+              $('.page6').fadeIn(1000)
+            } else {
+              $('#prize').one('click', function () {
+                $.post('https://taobao.troncell.com/api/v1/Taobao/ConfirmUserAward', {
+                  userAwardId: userId
+                }, function () {
+                  window.location.href = 'https://taoquan.taobao.com/coupon/unify_apply.htm?sellerId=2015024477&activityId=267b7541895f4d4b9ce7678d4569338a'//领券地址
+                })
+              })
+              $('.page1').fadeOut(1000)
+              $('.page5').fadeIn(1000)
+            }
+          } else if (i == 2) {//谢谢
+            $.post('https://taobao.troncell.com/api/v1/Taobao/ConfirmUserAward', {
+              userAwardId: userId
+            }, function () {
+              $('.page1').fadeOut(1000)
+              $('.page4').fadeIn(1000)
+            })
+
+          }
+        }, 3000)
+      })
+
+      $('#queren').click(function () {
+        $.post('https://taobao.troncell.com/api/v1/Taobao/ConfirmUserAward', {
+          userAwardId: userId
+        }, function () {
+          $('.page3').fadeIn();
+        })
+      })
+
+      $('.page3').click(function () {
+        $('.page2,.page3').fadeOut();
+        $('.page0').fadeIn();
+      })
+    })
+  }
+
+
+
+
+  function getRequest() {
+    var url = location.search;
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+      var str = url.substr(1);
+      strs = str.split("&");
+      for (var i = 0; i < strs.length; i++) {
+        var a = ''
+        if (strs[i].substr(str.length - 1, 1) == '=') {
+          a = '='
+        }
+        theRequest[strs[i].split("=")[0]] = strs[i].split("=")[1] + a;
+      }
     }
+    return theRequest;
+  }
+
+  function kindId(name) {
+    var self = this;
+    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) {
+      return decodeURI(r[2]);
+    } else {
+      return false;
+    };
+  }
 
 
-
-
-  })(window, document);
+  // })(window, document);
 </script>
 
 </html>

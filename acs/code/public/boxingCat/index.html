@@ -9,7 +9,7 @@
   <meta content="yes" name="apple-touch-fullscreen">
   <title>拳击猫创新口味，由你来定</title>
   <meta content="telephone=no,email=no" name="format-detection">
-  <meta name="spm-id" content="a1z51.23492108" />
+  <meta name="spm-id" content="608.11876882" />
   <meta name="viewport" id="viewport" content="width=640,user-scalable=0, target-densitydpi=320">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
   <link href="./styles/reset.css" rel="stylesheet" type="text/css">
@@ -82,7 +82,7 @@
       display: none;
       position: fixed;
       right: 6vw;
-      top:5%;
+      top: 5%;
       z-index: 9999;
       padding: 2vw 3.5vw;
       border-radius: 5vw;
@@ -97,8 +97,9 @@
   <img id="close" src="./source/close.png" style="z-index:999;position:fixed;width:8vw;height:8vw;top:3vw;right:3vw;">
 
   <img class="page0 fixed" src="./source/start/cover.png" style="width:100%;height:100%;top:0%;left:0%;" onclick="playVedio();">
-  <video webkit-playsinline='true' playsinline='true' preload="auto" class="page0 fixed" src="./source/mp4.mp4" onended="videoEnd()"></video>
-  <span id="skip">SKIP</span>
+  <video webkit-playsinline='true' playsinline='true' preload="auto" class="page0 fixed" src="//cloud.video.taobao.com/play/u/2785061673/p/1/e/6/t/1/50235560617.mp4"
+    onended="videoEnd()"></video>
+  <span id="skip">跳过</span>
 
   <img class="page1 fixed" src="./source/start/start.png" style="width:80%;height:90%;top:8%;left:10%;">
   <img class="page1 fixed" onclick="changePage(2)" src="./source/start/button.png" style="width:70%;height:10%;top:70%;left:15%;">
@@ -136,7 +137,7 @@
     </div>
   </div>
   <div class="page5">
-    <img class="container fixed" style="height: 80%;top:5vh;" src="">
+    <img class="container fixed" style="height: 80%;top:5vh;width:86%;left:7%;" src="">
     <div class="bottom fixed">
       <div>
         <img id="back" src="./source/back.png">
@@ -146,7 +147,6 @@
       </div>
     </div>
   </div>
-
 </body>
 <script>
 
@@ -155,6 +155,10 @@
     return false;
   }
 
+  if (getRequest().skip) {
+    $('.page0').css('display', 'none');
+    $('.page2').fadeIn();
+  }
   if (getRequest().screen) {
     $('#close').click(function () {
       window.location.href = 'https://nodejs.ews.m.jaeapp.com/boxingCat/index'//大屏的二维码页面
@@ -170,14 +174,14 @@
     $('.page' + index).css('display', 'block');
     if (index < 5 && param) {
       for (var i = 0; i < $('.page' + index + '>div>img').length; i++) {
-        $('.page' + index + '>div>img').eq(i).attr('src', './source/' + param + '/' + i + '.png')
+        $('.page' + index + '>div>img').eq(i).attr('src', 'https://nodejs.ews.m.jaeapp.com/source/' + param + '/' + i + '.png')
       }
-      $('.page' + index + '>.title').attr('src', './source/' + param + '/title.png')
+      $('.page' + index + '>.title').attr('src', 'https://nodejs.ews.m.jaeapp.com/source/' + param + '/title.png')
       nowParam = param;
       nowIndex = index;
     } else if (index == 5) {
       detail = param;
-      $('.page5>img').attr('src', './source/' + nowParam + '/' + param + '_detail.png')
+      $('.page5>img').attr('src', 'https://nodejs.ews.m.jaeapp.com/source/' + nowParam + '/' + param + '_detail.png')
       $('.page5 #back').one('click', function () {
         changePage(nowIndex, nowParam);
       })
@@ -188,7 +192,7 @@
     $('video').css('display', 'block')
     $('img').css('opacity', 0);
     $('video')[0].play()
-    if (getRequest().online) {
+    if (getRequest().online || getRequest().from == 'online') {
       $('#skip').css('display', 'block').one('click', function () {
         $('video')[0].pause()
         videoEnd()
@@ -210,19 +214,22 @@
   }
 
   function goQuestionaire() {
-    var url = "https://nodejs.ews.m.jaeapp.com/boxingCat/rotate?param=" + nowParam + '&detail=' + detail
+    var url = "https://market.m.taobao.com/markets/try/boxingcattaste?param=" + nowParam + '&detail=' + detail
     if (getRequest().screen) {
       url += '&screen=1'
     }
     if (getRequest().mixname) {
       url = url + '&mixname=' + getRequest().mixname
     }
+    if (getRequest().online || getRequest().from == 'online') {
+      url += '&from=online'
+    }
     window.location.href = url
   }
 
 
   function getRequest() {
-    var url = location.search; //获取url中"?"符后的字串   
+    var url = location.search; //获取url中"?"符后的字串
     var theRequest = new Object();
     if (url.indexOf("?") != -1) {
       var str = url.substr(1);
