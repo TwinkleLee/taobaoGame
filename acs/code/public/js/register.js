@@ -106,16 +106,16 @@
                 }, function (result) {
                     // alert(result)
                     // Tida.toast(JSON.parse(result).message)
-                    Tida.toast("验证码已发送,15秒后可重新尝试");
+                    Tida.toast("验证码已发送,60秒后可重新尝试");
 
                 })
 
                 //此处调用接口发送验证码
-                // Tida.toast("验证码已发送,15秒后可重新尝试");
+                // Tida.toast("验证码已发送,60秒后可重新尝试");
                 $('#verticicateImage').css('display', 'none');
                 setTimeout(() => {
                     $('#verticicateImage').css('display', 'block');
-                }, 15000);
+                }, 60000);
             } else {
                 Tida.toast("请填写正确的手机号");
             }

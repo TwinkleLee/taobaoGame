@@ -1,6 +1,8 @@
 $.ajaxSetup({
   cache: false //关闭AJAX缓存
 });
+
+
 (function (w) {
 
 })(window);
@@ -29,18 +31,18 @@ Tida.ready({
         var hasGet;
         if (arr.indexOf('女王驾到') >= 0) {
           a = 1;
-          $('#hui1').css('display', 'none')
-          $('#liang1').css('display', 'block')
+          $('.hui1').css('display', 'none')
+          $('.liang1').css('display', 'block')
         }
         if (arr.indexOf('人脸魔镜') >= 0) {
           b = 1;
-          $('#hui2').css('display', 'none')
-          $('#liang2').css('display', 'block')
+          $('.hui2').css('display', 'none')
+          $('.liang2').css('display', 'block')
         }
         if (arr.indexOf('人脸试衣间') >= 0) {
           c = 1;
-          $('#hui3').css('display', 'none')
-          $('#liang3').css('display', 'block')
+          $('.hui3').css('display', 'none')
+          $('.liang3').css('display', 'block')
         }
 
 
