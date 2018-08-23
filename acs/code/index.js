@@ -6,7 +6,6 @@ var app = express();
 var index = require(__dirname + "/routes/index.js");
 var api = require(__dirname + "/routes/api.js");
 
-
 logservice.use(app);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -21,7 +20,7 @@ app.use("/api", api);
 
 
 //测试端口5004 正式端口5002
-var port = 5004;
+var port = 5002;
 var server = app.listen(port, '0.0.0.0', function () {
     console.log('127.0.0.1:' + port);
 })
