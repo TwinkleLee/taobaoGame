@@ -413,7 +413,7 @@ router.post('/verticicate', function (req, res) {
             pwd: '9aa2bf57779f3f56c9c18e6a0a8957ab',
             template: '439062',
             mobile: params.mobile,
-            content: encodeURI(params.verticicate)
+            content: encodeURI('{"code":"'+params.verticicate+'"}')
         }
     };
 
