@@ -12,30 +12,6 @@ var request = require("request");
 var http = require('http');
 
 
-// var url = 'http://p0.meituan.net/tuanpic/3df525af5a3f7fe04077567d2a6caf794904.png';  //一张网络图片
-// http.get(url, function (res) {
-//     var chunks = []; //用于保存网络请求不断加载传输的缓冲数据
-//     var size = 0;　　 //保存缓冲数据的总长度
-//     res.on('data', function (chunk) {
-//         chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
-//         //node会把接收到的数据片段逐段的保存在缓冲区（Buffer），
-//         //这些数据片段会形成一个个缓冲对象（即Buffer对象），
-//         //而Buffer数据的拼接并不能像字符串那样拼接（因为一个中文字符占三个字节），
-//         //如果一个数据片段携带着一个中文的两个字节，下一个数据片段携带着最后一个字节，
-//         //直接字符串拼接会导致乱码，为避免乱码，所以将得到缓冲数据推入到chunks数组中，
-//         //利用下面的node.js内置的Buffer.concat()方法进行拼接
-//         size += chunk.length;　　//累加缓冲数据的长度
-//     });
-//     res.on('end', function (err) {
-//         var data = Buffer.concat(chunks, size);　　//Buffer.concat将chunks数组中的缓冲数据拼接起来，返回一个新的Buffer对象赋值给data
-//         console.log(Buffer.isBuffer(data));　　　　//可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
-//         console.log(data)
-//     });
-// });
-
-
-
-
 //调用接口需要参数
 var appKey = getData('appKey');
 var secret = getData('secret');
@@ -127,8 +103,6 @@ router.post('/doRegister', upload.array(), function (req, res) {
         // var url = 'http://p0.meituan.net/tuanpic/3df525af5a3f7fe04077567d2a6caf794904.png'
         https.get(url, function (res2) {
 
-            // logService.logger.info(223);
-
             var chunks = []; //用于保存网络请求不断加载传输的缓冲数据
             var size = 0;　　 //保存缓冲数据的总长度
             res2.on('data', function (chunk) {
@@ -146,7 +120,6 @@ router.post('/doRegister', upload.array(), function (req, res) {
                 var data = Buffer.concat(chunks, size);　　//Buffer.concat将chunks数组中的缓冲数据拼接起来，返回一个新的Buffer对象赋值给data
                 console.log(Buffer.isBuffer(data));　　　　//可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
                 byteArray = data;
-                // console.log(data)
                 var apiParams = {
                     'face_group_type': faceGroupType,
                     'seller_id': params.seller_id,
