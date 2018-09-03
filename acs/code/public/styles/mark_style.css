@@ -2,7 +2,7 @@ html{
     font-size:4vw;
 }
 #index{
-    background-image: url("../img/mark/background.png");
+    /* background-image: url("../img/mark/background.png"); */
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }

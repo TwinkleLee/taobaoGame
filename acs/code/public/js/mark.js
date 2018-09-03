@@ -19,8 +19,12 @@ $.ajaxSetup({
             localStorage.setItem('tenantName', tenantName);
         }
     });
+    if(localStorage.getItem('status') == 'Register'){
+        document.title="人脸会员注册"
+    }else if(localStorage.getItem('status') == 'Done'){
+        document.title="女王驾到活动"
+    }
 })(window);
-
 
 Tida.ready({
     module: ["device", "media", "server", "social", "widget", "sensor", "share", "buy", "draw", "im", "calendar", 'award', 'ar'],
@@ -67,16 +71,15 @@ Tida.ready({
                             if (data.result.success && data.result.model == 'false') {
                             // if (1>0) {
                                 if (localStorage.getItem('status') && localStorage.getItem('status') == 'Done') {
-                                    $('#index').css('opacity', '1')
+                                    $('#index').css({'opacity':'1','background-image':'url("../img/mark/background.png")'})
                                     $("#coupon img").attr('src', "/img/mark/button2.png");
                                     $("#coupon").attr('href', "/register");
                                 } else if (localStorage.getItem('status') == 'Register') {
                                     window.location.href = "/register"
                                 }
-
                             } else {
                                 if (localStorage.getItem('status') && localStorage.getItem('status') == 'Done') {
-                                    $('#index').css('opacity', '1')
+                                    $('#index').css({'opacity':'1','background-image':'url("../img/mark/background.png")'})
                                     $("#coupon img").attr('src', "/img/mark/button1.png");
                                     $("#coupon").attr('href', "/activity");
                                 } else if (localStorage.getItem('status') == 'Register') {
