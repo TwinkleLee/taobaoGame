@@ -7,7 +7,8 @@ html{
     background-repeat: no-repeat;
 }
 .body .photoHolder{
-    background: url("../img/mark/border.png");
+    /* background: url("../img/mark/border.png"); */
+    background: url("../img/mark/new/border.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     padding: 2.33rem 0px 0rem 0px;
