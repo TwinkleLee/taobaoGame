@@ -28,6 +28,7 @@ var client = new taobao.ApiClient({
 
 logService.logger.info('router init');
 /* GET home page. */
+
 router.get('/', function (req, res) {
     var tenantName = req.query.TenantName || req.query.tenantName;
     if (!getPage(tenantName)) {
@@ -41,6 +42,13 @@ router.get('/', function (req, res) {
 router.get('/healthCheck', function (req, res) {
     res.end("success");
 })
+
+
+//会员注册
+router.get('/demo', function (req, res) {
+    res.sendFile(root + "/acs/code/public/html/demo.html");
+})
+
 //会员注册
 router.get('/register', function (req, res) {
     res.sendFile(root + "/acs/code/public/html/register_mark.html");
