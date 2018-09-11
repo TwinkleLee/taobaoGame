@@ -16,7 +16,9 @@ var http = require('http');
 var appKey = getData('appKey');
 var secret = getData('secret');
 var root = process.cwd();
-var session = getData('troncellSession');
+// var session = getData('troncellSession');
+var session = getData('markSession');
+
 var faceGroupType = getData('faceGroupType');
 
 var client = new taobao.ApiClient({
