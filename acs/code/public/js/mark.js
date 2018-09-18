@@ -66,7 +66,7 @@ Tida.ready({
                         // $.post('https://taobao.troncell.com/api/v1/Taobao/RegisteredFaceMember?mixName=' + mixNick +'&memberId='+ memberId+'&sellerId='+sellerId, {}, function (result) {
                         //     alert(JSON.stringify(result));
                         // })
-                        localStorage.setItem("taobaoID", result.data.taobaoID);
+                        localStorage.setItem("taobaoID", result.data.taobaoID);//即sellerId
                         $("#mainImg").attr('src', result.data.gameImageUrl);
                         localStorage.setItem("couponUrl_mark", result.data.couponUrl);
                         Tida.showLoading("Loading...");

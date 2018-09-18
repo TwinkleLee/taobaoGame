@@ -46,6 +46,7 @@ Tida.ready({
                         Tida.toast("网络故障,请重试."); 
                     }
                 });
+                
                 //获取头像
                 $.post('/getAvatar', { 'mixnick': mixNick }, function (data, status) {
                     $("#avatar").attr("src", data.avatar || 'img/mark/avatar.png');

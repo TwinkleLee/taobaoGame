@@ -11,7 +11,6 @@ var getData = require(process.cwd() + '/acs/code/data/data.js');
 var request = require("request");
 var http = require('http');
 
-
 //调用接口需要参数
 var appKey = getData('appKey');
 var secret = getData('secret');
