@@ -85,7 +85,7 @@
 
                 fail: function (res) {
                     var str = JSON.stringify(res);
-                    alert(JSON.stringify(str));//JSON.stringify(str)为图片的url地址。
+                    // alert(JSON.stringify(str));//JSON.stringify(str)为图片的url地址。
                     console.log(res);
                 }
 
