@@ -30,7 +30,6 @@ $.ajaxSetup({
     // }
 })(window);
 
-
 Tida.ready({
     module: ["device", "media", "server", "social", "widget", "sensor", "share", "buy", "draw", "im", "calendar", 'award', 'ar'],
     debug: 1,
@@ -39,12 +38,26 @@ Tida.ready({
 }, function (e) {
     Tida.showLoading("Loading...");
     Tida.doAuth(true, function (data) {
+
+
+        alert('aa')
+
+
         if (data.finish) {
             Tida.mixNick({}, function (d) {
                 mixNick = d.mixnick;
                 localStorage.setItem("mixNick", mixNick);
+
+
+                alert(mixNick)
+                alert(localStorage.getItem('actionId'))
+
+
                 //获取 gameImageUrl taobaoID couponUrl
                 $.post('https://taobao.troncell.com/api/v1/Taobao/PostDataByUser?mixName=' + mixNick + "&actionId=" + localStorage.getItem('actionId'), {}, function (result) {
+
+                    alert('ee')
+
                     Tida.hideLoading();
                     if (result.status == "OK") {
 
@@ -70,6 +83,10 @@ Tida.ready({
                         $("#mainImg").attr('src', result.data.gameImageUrl);
                         localStorage.setItem("couponUrl_mark", result.data.couponUrl);
                         Tida.showLoading("Loading...");
+
+
+                        // alert(1)
+
                         //判断是否是人脸头像会员
                         $.post('/isRegister', { 'taobao_nick': mixNick, 'seller_id': localStorage.getItem("taobaoID") }, function (data, status) {
                             Tida.hideLoading();
@@ -82,7 +99,12 @@ Tida.ready({
                                     $("#coupon").attr('href', "/register");
                                     document.title = "女王驾到活动"
 
+                                    // alert(2)
+
                                 } else if (localStorage.getItem('status') == 'Register') {
+
+                                    // alert(3)
+
                                     window.location.href = "/register"
                                 }
                             } else {
@@ -93,13 +115,22 @@ Tida.ready({
                                     $("#coupon").attr('href', "/activity");
                                     document.title = "女王驾到活动"
 
+                                    // alert(4)
+
+
                                 } else if (localStorage.getItem('status') == 'Register') {
+
+                                    // alert(5)
+
                                     window.location.href = "/activity"
                                 }
                             }
                         }, 'json')
 
                     } else {
+
+                        // alert(6)
+
                         $("#coupon").attr('href', '#');
                         Tida.toast("网络故障,请重试.");
                     }
